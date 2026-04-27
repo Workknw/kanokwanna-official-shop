@@ -49,12 +49,62 @@
         .search-input:focus { width: 280px; background: white; border-color: var(--accent); }
 
         /* --- Hero --- */
-        .hero-premium {
-            height: 70vh; display: flex; align-items: center; justify-content: center;
-            background: linear-gradient(135deg, #004d2a 0%, #002d18 100%);
-            color: white; text-align: center; position: relative; overflow: hidden; margin-top: 38px;
-        }
-        .hero-content h1 { font-size: clamp(2.5rem, 8vw, 4.5rem); margin: 0; font-weight: 700; line-height: 1.1; }
+        .hero-slider {
+    height: 70vh;
+    position: relative;
+    overflow: hidden;
+    margin-top: 38px;
+}
+
+.slides {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.slide {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+.slide.active {
+    opacity: 1;
+    z-index: 1;
+}
+
+.slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 40, 20, 0.45);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+    text-align: center;
+    color: white;
+}
+
+.hero-content h1 {
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    margin: 0;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.hero-content p {
+    margin-top: 20px;
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
 
         /* --- Trust Bar --- */
         .trust-bar {
@@ -165,12 +215,32 @@
         </div>
     </nav>
 
-    <section class="hero-premium">
+    <section class="hero-slider">
+    <div class="slides">
+        <div class="slide active">
+            <img src="https://images.unsplash.com/photo-1598033129183-c4f50c7176c8?auto=format&fit=crop&w=1600&q=80">
+        </div>
+
+        <div class="slide">
+            <img src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=1600&q=80">
+        </div>
+
+        <div class="slide">
+            <img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=1600&q=80">
+        </div>
+
+        <div class="slide">
+            <img src="https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=1600&q=80">
+        </div>
+    </div>
+
+    <div class="hero-overlay">
         <div class="hero-content">
             <h1>Elite Uniforms<br>Since 1999</h1>
-            <p style="opacity:0.8; font-size:1.1rem; margin-top:20px;">สัมผัสความประณีตระดับงานฝีมือ มาตรฐานโรงงานผลิตเครื่องแบบระดับพรีเมียม</p>
+            <p>สัมผัสความประณีตระดับงานฝีมือ มาตรฐานโรงงานผลิตเครื่องแบบระดับพรีเมียม</p>
         </div>
-    </section>
+    </div>
+</section>
 
     <div class="trust-bar">
         <span>🚚 ส่งทั่วประเทศ</span>
@@ -433,6 +503,21 @@
             cart = [];
             saveCart();
         }
+        let currentSlide = 0;
+const slides = document.querySelectorAll(".slide");
+
+function autoSlide() {
+    slides[currentSlide].classList.remove("active");
+
+    currentSlide++;
+    if (currentSlide >= slides.length) {
+        currentSlide = 0;
+    }
+
+    slides[currentSlide].classList.add("active");
+}
+
+setInterval(autoSlide, 3500);
     </script>
 </body>
 </html>
