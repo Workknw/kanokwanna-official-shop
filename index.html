@@ -147,7 +147,7 @@
 <body>
 
     <div class="urgency-bar">
-        ⚡ คุ้ม...ครบ...จบ ที่กนกวรรณ ทับทอง
+         คุ้ม...ครบ...จบ ที่กนกวรรณ ทับทอง
     </div>
 
     <div id="toast">เพิ่มลงตะกร้าแล้ว ✓</div>
@@ -203,7 +203,7 @@
             <div class="product-card">
                 <div class="badge-hot">🔥 BEST SELLER</div>
                 <div class="img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1598033129183-c4f50c7176c8?auto=format&fit=crop&w=800&q=80">
+                    <img src="#">
                 </div>
                 <div class="card-body">
                     <div style="font-size:12px; color:var(--danger); font-weight:700; margin-bottom:8px;">สั่งไปแล้ว 128 รายการในสัปดาห์นี้</div>
@@ -248,6 +248,33 @@
                     </select>
                     <button class="add-to-bag-btn" onclick="addToCart('ชุดกากีข้าราชการ', 1850, 'qty-2', 'size-2')">Add to Bag</button>
                     <button class="buy-now-btn" onclick="buyNow('ชุดกากีข้าราชการ', 1850, 'qty-2', 'size-2')">Buy Now ⚡</button>
+                </div>
+            </div>
+            <div class="product-grid">
+            <div class="product-card">
+                <div class="badge-hot">🔥 BEST SELLER</div>
+                <div class="img-wrapper">
+                    <img src="#">
+                </div>
+                <div class="card-body">
+                    <div style="font-size:12px; color:var(--danger); font-weight:700; margin-bottom:8px;">สั่งไปแล้ว 128 รายการในสัปดาห์นี้</div>
+                    <span style="font-size:11px; letter-spacing:2px; color:#999; text-transform:uppercase;">Education</span>
+                    <h3 style="margin:10px 0 20px; font-size:20px;">เสื้อเชิ้ตนักเรียนชาย Gold Edition</h3>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                        <div style="display:flex; align-items:center; background:#f4f4f4; border-radius:12px; padding:4px;">
+                            <button class="qty-btn" style="border:none; background:none; width:35px; height:35px;" onclick="updateQtyUI('qty-1', -1)">-</button>
+                            <input type="number" id="qty-1" value="1" min="1" style="width:40px; text-align:center; border:none; background:none; font-weight:700;">
+                            <button class="qty-btn" style="border:none; background:none; width:35px; height:35px;" onclick="updateQtyUI('qty-1', 1)">+</button>
+                        </div>
+                        <span style="font-weight:700; font-size:22px; color:var(--primary);">฿350</span>
+                    </div>
+                    <select id="size-1" style="width:100%; padding:12px; border-radius:10px; margin-bottom:15px; border:1px solid #eee; font-family: inherit;">
+                        <option>Size 36 (อก 36")</option>
+                        <option>Size 38 (อก 38")</option>
+                        <option>Size 40 (อก 40")</option>
+                    </select>
+                    <button class="add-to-bag-btn" onclick="addToCart('เสื้อนักเรียน Gold Edition', 350, 'qty-1', 'size-1')">Add to Bag</button>
+                    <button class="buy-now-btn" onclick="buyNow('เสื้อนักเรียน Gold Edition', 350, 'qty-1', 'size-1')">Buy Now ⚡</button>
                 </div>
             </div>
         </div>
