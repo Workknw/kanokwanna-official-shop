@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KANOKWAN | The Art of Uniforms</title>
+    <title>KANOKWAN | Elite Uniform Tailoring</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -12,6 +12,7 @@
             --dark: #1a1a1a;
             --light: #f8f9fa;
             --white: #ffffff;
+            --danger: #e74c3c;
             --glass: rgba(255, 255, 255, 0.85);
             --transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
@@ -22,11 +23,17 @@
             background: var(--light); color: var(--dark); overflow-x: hidden;
         }
 
-        /* --- Navigation --- */
+        /* --- Global Components --- */
+        .urgency-bar { 
+            background: var(--dark); color: white; padding: 10px; 
+            text-align: center; font-size: 13px; font-weight: 600; 
+            letter-spacing: 1px; position: relative; z-index: 1100;
+        }
+        
         .glass-nav {
-            position: fixed; top: 0; width: 100%; background: var(--glass);
+            position: fixed; top: 38px; width: 100%; background: var(--glass);
             backdrop-filter: blur(15px); z-index: 1000; border-bottom: 1px solid rgba(0,0,0,0.05);
-            padding: 15px 0;
+            padding: 12px 0; transition: 0.3s;
         }
         .nav-content {
             max-width: 1400px; margin: 0 auto; display: flex;
@@ -34,137 +41,201 @@
         }
         .brand-logo { font-size: 22px; font-weight: 700; letter-spacing: 2px; color: var(--primary); text-decoration: none; text-transform: uppercase; }
 
+        .nav-right { display: flex; align-items: center; gap: 15px; }
+        .search-input {
+            padding: 10px 18px; border-radius: 30px; border: 1px solid #eee;
+            background: #f1f1f1; width: 220px; font-family: inherit; outline: none; transition: 0.3s;
+        }
+        .search-input:focus { width: 280px; background: white; border-color: var(--accent); }
+
         /* --- Hero --- */
         .hero-premium {
-            height: 80vh; display: flex; align-items: center; justify-content: center;
+            height: 70vh; display: flex; align-items: center; justify-content: center;
             background: linear-gradient(135deg, #004d2a 0%, #002d18 100%);
-            color: white; text-align: center; position: relative; overflow: hidden;
+            color: white; text-align: center; position: relative; overflow: hidden; margin-top: 38px;
         }
         .hero-content h1 { font-size: clamp(2.5rem, 8vw, 4.5rem); margin: 0; font-weight: 700; line-height: 1.1; }
 
+        /* --- Trust Bar --- */
+        .trust-bar {
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 40px;
+            padding: 20px; background: white; border-bottom: 1px solid #eee;
+            font-size: 13px; font-weight: 600; color: #555;
+        }
+
+        /* --- Brand Story --- */
+        .story-section { padding: 80px 40px; text-align: center; background: white; border-bottom: 1px solid #eee; }
+        .story-content { max-width: 800px; margin: 0 auto; }
+
+        /* --- Services --- */
+        .services-section { background: white; padding: 80px 40px; text-align: center; }
+        .services-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px; max-width: 1200px; margin: 40px auto 0;
+        }
+        .service-item {
+            padding: 40px 30px; border-radius: 24px; background: var(--light);
+            border: 1px solid rgba(0,0,0,0.03); transition: all 0.4s ease;
+        }
+        .service-item:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.05); background: white; border-color: var(--accent); }
+
+        /* --- Product Card --- */
+        .container { max-width: 1400px; margin: 60px auto; padding: 0 40px; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 40px; }
+        .product-card {
+            background: white; border-radius: 24px; overflow: hidden;
+            transition: var(--transition); border: 1px solid rgba(0,0,0,0.03); will-change: transform; position: relative;
+        }
+        .product-card:hover { transform: translateY(-10px); box-shadow: 0 30px 60px rgba(0,0,0,0.08); }
+        .badge-hot { position: absolute; top: 20px; left: 20px; background: var(--danger); color: white; padding: 5px 15px; border-radius: 50px; font-size: 12px; font-weight: 700; z-index: 10; }
+        
+        .img-wrapper { width: 100%; height: 380px; background: #eee; overflow: hidden; }
+        .img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: 0.8s; }
+        .product-card:hover .img-wrapper img { transform: scale(1.08); }
+
+        /* --- Buttons --- */
+        button { cursor: pointer; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); border: none; font-family: inherit; }
+        button:active { transform: scale(0.96); }
+        .buy-now-btn {
+            width: 100%; margin-top: 10px; padding: 16px; background: var(--accent); color: var(--dark);
+            border-radius: 14px; font-weight: 800;
+        }
+        .add-to-bag-btn {
+            width: 100%; padding: 16px; background: var(--dark); color: white;
+            border-radius: 14px; font-weight: 700;
+        }
+
         /* --- Components --- */
         #toast {
-            position: fixed; top: 90px; right: 20px; background: var(--primary);
+            position: fixed; top: 100px; right: 20px; background: var(--primary);
             color: white; padding: 12px 28px; border-radius: 50px;
             transform: translateX(150%); transition: var(--transition); z-index: 3000;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1); font-weight: 600;
         }
         #toast.show { transform: translateX(0); }
-
         .overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
             display: none; z-index: 1500; opacity: 0; transition: 0.4s;
         }
 
-        /* --- Product Grid --- */
-        .container { max-width: 1400px; margin: 80px auto; padding: 0 40px; }
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 40px; }
-        
-        .product-card {
-            background: white; border-radius: 24px; overflow: hidden;
-            transition: var(--transition); border: 1px solid rgba(0,0,0,0.03);
-        }
-        .product-card:hover { transform: translateY(-10px); box-shadow: 0 30px 60px rgba(0,0,0,0.08); }
-
-        .img-wrapper { width: 100%; height: 380px; background: #eee; overflow: hidden; }
-        .img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: 0.8s; }
-        .product-card:hover .img-wrapper img { transform: scale(1.08); }
-
-        .card-body { padding: 25px; }
-
-        /* --- Quantity Input Style --- */
-        .qty-control {
-            display: flex; align-items: center; background: #f4f4f4;
-            border-radius: 12px; padding: 4px; margin-bottom: 15px; width: fit-content;
-        }
-        .qty-btn {
-            border: none; background: none; width: 35px; height: 35px;
-            cursor: pointer; font-size: 18px; font-weight: 600; color: var(--primary);
-        }
-        .qty-num { width: 45px; text-align: center; border: none; background: none; font-weight: 700; font-family: inherit; }
-
-        .add-to-cart-btn {
-            width: 100%; padding: 16px; background: var(--dark); color: white;
-            border: none; border-radius: 14px; font-weight: 700; cursor: pointer;
-            transition: 0.3s;
-        }
-        .add-to-cart-btn:hover { background: var(--primary); }
-
-        /* --- Side Cart Panel --- */
+        /* --- Side Cart --- */
         .cart-panel {
             position: fixed; right: -500px; top: 0; width: 450px; height: 100%;
             background: white; z-index: 2000; transition: var(--transition);
-            display: flex; flex-direction: column; padding: 40px;
+            display: flex; flex-direction: column; padding: 40px; box-shadow: -10px 0 50px rgba(0,0,0,0.1);
         }
         .cart-panel.active { right: 0; }
         .cart-items { flex-grow: 1; overflow-y: auto; margin: 20px 0; }
 
-        .checkout-form input, .checkout-form textarea {
-            width: 100%; padding: 14px; margin-bottom: 12px;
-            border: 1px solid #eee; border-radius: 12px; font-family: inherit; outline: none;
-        }
-        .checkout-form input:focus { border-color: var(--accent); }
+        /* --- Reviews --- */
+        .review-section { background: #fff; padding: 100px 40px; text-align: center; border-top: 1px solid #eee; }
+        .review-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 1200px; margin: 40px auto; }
+        .review-card { padding: 30px; border-radius: 20px; background: var(--light); text-align: left; }
 
         /* --- Footer --- */
         footer { background: var(--dark); color: white; padding: 60px 40px; text-align: center; }
 
-        @media (max-width: 600px) {
-            .cart-panel { width: 100%; padding: 25px; }
+        @media (max-width: 768px) {
             .nav-content { padding: 0 20px; }
-            .container { padding: 0 20px; }
+            .search-input { display: none; }
+            .cart-panel { width: 100%; }
+            .hero-premium { margin-top: 38px; }
         }
     </style>
 </head>
 <body>
 
-    <div id="toast">Added to bag ✓</div>
+    <div class="urgency-bar">
+        ⚡ LIMITED STOCK: เหลือสต็อกเพียง 24 ชิ้นสุดท้ายสำหรับโปรโมชั่นวันนี้
+    </div>
+
+    <div id="toast">เพิ่มลงตะกร้าแล้ว ✓</div>
     <div class="overlay" id="overlay" onclick="toggleCart()"></div>
 
-    <nav class="glass-nav">
+    <nav class="glass-nav" id="mainNav">
         <div class="nav-content">
             <a href="#" class="brand-logo">KANOKWAN</a>
-            <div onclick="toggleCart()" style="cursor:pointer; background:var(--dark); color:white; padding:10px 22px; border-radius:50px; font-size:14px; font-weight:600;">
-                Bag (<span id="cart-count">0</span>)
+            <div class="nav-right">
+                <input type="text" placeholder="ค้นหาชุดเครื่องแบบ..." class="search-input">
+                <div onclick="toggleCart()" style="cursor:pointer; background:var(--dark); color:white; padding:10px 22px; border-radius:50px; font-size:14px; font-weight:600;">
+                    Bag (<span id="cart-count">0</span>)
+                </div>
             </div>
         </div>
     </nav>
 
     <section class="hero-premium">
         <div class="hero-content">
-            <h1>The Art of<br>Professional Attire</h1>
-            <p style="opacity:0.8; font-size:1.1rem; margin-top:20px;">สัมผัสความประณีตระดับงานฝีมือ สั่งตัดและพร้อมส่งทั่วประเทศ</p>
+            <h1>Elite Uniforms<br>Since 1999</h1>
+            <p style="opacity:0.8; font-size:1.1rem; margin-top:20px;">สัมผัสความประณีตระดับงานฝีมือ มาตรฐานโรงงานผลิตเครื่องแบบระดับพรีเมียม</p>
+        </div>
+    </section>
+
+    <div class="trust-bar">
+        <span>🚚 ส่งทั่วประเทศ</span>
+        <span>🧵 งานตัดโรงงานจริง</span>
+        <span>📄 มีใบเสร็จเบิกได้</span>
+        <span>⭐ ลูกค้าองค์กรกว่า 200+</span>
+    </div>
+
+    <section class="story-section">
+        <div class="story-content">
+            <span style="color:var(--accent); font-weight:700; letter-spacing:2px; font-size: 13px;">OUR HERITAGE</span>
+            <h2 style="font-size:32px; margin:15px 0; color:var(--primary);">ตำนานแห่งความประณีต</h2>
+            <p style="color:#666; line-height:1.8; font-size:1.05rem;">
+                หจก. กนกวรรณ ทับทอง เริ่มต้นจากความมุ่งมั่นในปี 1999 
+                เราผลิตเครื่องแบบด้วยหัวใจและมาตรฐานงานตัดระดับพรีเมียม 
+                เพื่อให้ทุกองค์กรและโรงเรียนได้รับสิ่งที่ดีที่สุดในราคาโรงงานจริง
+            </p>
+        </div>
+    </section>
+
+    <section class="services-section">
+        <h2 style="font-size: 32px; color: var(--primary);">บริการระดับมืออาชีพ</h2>
+        <div class="services-grid">
+            <div class="service-item">
+                <strong>✂️ งานสั่งตัดพิเศษ (Custom Tailored)</strong>
+                <p style="font-size: 14px; color: #777; margin-top: 10px;">บริการวัดตัวและออกแบบให้เข้ากับสรีระและเอกลักษณ์ขององค์กร</p>
+            </div>
+            <div class="service-item">
+                <strong>🧵 งานปักประณีต (Embroidery)</strong>
+                <p style="font-size: 14px; color: #777; margin-top: 10px;">ระบบปักคอมพิวเตอร์ความละเอียดสูง พร้อมลายกนกและโลโก้เฉพาะตัว</p>
+            </div>
+            <div class="service-item">
+                <strong>🎨 ออกแบบฟรี (Design Consult)</strong>
+                <p style="font-size: 14px; color: #777; margin-top: 10px;">ให้คำปรึกษาเรื่องเนื้อผ้าและดีไซน์เพื่อให้เหมาะสมกับการใช้งานจริง</p>
+            </div>
         </div>
     </section>
 
     <main class="container">
+        <h2 style="margin-bottom:40px; font-size:28px;">สินค้าแนะนำ</h2>
         <div class="product-grid">
             <div class="product-card">
+                <div class="badge-hot">🔥 BEST SELLER</div>
                 <div class="img-wrapper">
                     <img src="https://images.unsplash.com/photo-1598033129183-c4f50c7176c8?auto=format&fit=crop&w=800&q=80">
                 </div>
                 <div class="card-body">
+                    <div style="font-size:12px; color:var(--danger); font-weight:700; margin-bottom:8px;">สั่งไปแล้ว 128 รายการในสัปดาห์นี้</div>
                     <span style="font-size:11px; letter-spacing:2px; color:#999; text-transform:uppercase;">Education</span>
                     <h3 style="margin:10px 0 20px; font-size:20px;">เสื้อเชิ้ตนักเรียนชาย Gold Edition</h3>
-                    
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                        <div class="qty-control">
-                            <button class="qty-btn" onclick="updateQty('qty-1', -1)">-</button>
-                            <input type="number" class="qty-num" id="qty-1" value="1" min="1">
-                            <button class="qty-btn" onclick="updateQty('qty-1', 1)">+</button>
+                        <div style="display:flex; align-items:center; background:#f4f4f4; border-radius:12px; padding:4px;">
+                            <button class="qty-btn" style="border:none; background:none; width:35px; height:35px;" onclick="updateQtyUI('qty-1', -1)">-</button>
+                            <input type="number" id="qty-1" value="1" min="1" style="width:40px; text-align:center; border:none; background:none; font-weight:700;">
+                            <button class="qty-btn" style="border:none; background:none; width:35px; height:35px;" onclick="updateQtyUI('qty-1', 1)">+</button>
                         </div>
                         <span style="font-weight:700; font-size:22px; color:var(--primary);">฿350</span>
                     </div>
-
-                    <select id="size-1" style="width:100%; padding:12px; border-radius:10px; margin-bottom:15px; border:1px solid #eee; font-family:inherit;">
+                    <select id="size-1" style="width:100%; padding:12px; border-radius:10px; margin-bottom:15px; border:1px solid #eee; font-family: inherit;">
                         <option>Size 36 (อก 36")</option>
                         <option>Size 38 (อก 38")</option>
                         <option>Size 40 (อก 40")</option>
                     </select>
-
-                    <button onclick="addToCart('เสื้อนักเรียน Gold Edition', 350, 'qty-1', 'size-1')" class="add-to-cart-btn">
-                        Add to Bag
-                    </button>
+                    <button class="add-to-bag-btn" onclick="addToCart('เสื้อนักเรียน Gold Edition', 350, 'qty-1', 'size-1')">Add to Bag</button>
+                    <button class="buy-now-btn" onclick="buyNow('เสื้อนักเรียน Gold Edition', 350, 'qty-1', 'size-1')">Buy Now ⚡</button>
                 </div>
             </div>
 
@@ -173,74 +244,85 @@
                     <img src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=800&q=80">
                 </div>
                 <div class="card-body">
+                    <div style="font-size:12px; color:#666; font-weight:700; margin-bottom:8px;">สต็อกคงเหลือ: 12 ชุดสุดท้าย</div>
                     <span style="font-size:11px; letter-spacing:2px; color:#999; text-transform:uppercase;">Professional</span>
-                    <h3 style="margin:10px 0 20px; font-size:20px;">ชุดกากีข้าราชการ (ชาย/หญิง)</h3>
-                    
+                    <h3 style="margin:10px 0 20px; font-size:20px;">ชุดกากีข้าราชการพรีเมียม</h3>
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                        <div class="qty-control">
-                            <button class="qty-btn" onclick="updateQty('qty-2', -1)">-</button>
-                            <input type="number" class="qty-num" id="qty-2" value="1" min="1">
-                            <button class="qty-btn" onclick="updateQty('qty-2', 1)">+</button>
+                        <div style="display:flex; align-items:center; background:#f4f4f4; border-radius:12px; padding:4px;">
+                            <button class="qty-btn" style="border:none; background:none; width:35px; height:35px;" onclick="updateQtyUI('qty-2', -1)">-</button>
+                            <input type="number" id="qty-2" value="1" min="1" style="width:40px; text-align:center; border:none; background:none; font-weight:700;">
+                            <button class="qty-btn" style="border:none; background:none; width:35px; height:35px;" onclick="updateQtyUI('qty-2', 1)">+</button>
                         </div>
                         <span style="font-weight:700; font-size:22px; color:var(--primary);">฿1,850</span>
                     </div>
-
-                    <select id="size-2" style="width:100%; padding:12px; border-radius:10px; margin-bottom:15px; border:1px solid #eee; font-family:inherit;">
-                        <option>Size S</option>
-                        <option>Size M</option>
-                        <option>Size L</option>
-                        <option>Size XL</option>
+                    <select id="size-2" style="width:100%; padding:12px; border-radius:10px; margin-bottom:15px; border:1px solid #eee; font-family: inherit;">
+                        <option>Size S</option><option>Size M</option><option>Size L</option>
                     </select>
-
-                    <button onclick="addToCart('ชุดกากีข้าราชการ', 1850, 'qty-2', 'size-2')" class="add-to-cart-btn">
-                        Add to Bag
-                    </button>
+                    <button class="add-to-bag-btn" onclick="addToCart('ชุดกากีข้าราชการ', 1850, 'qty-2', 'size-2')">Add to Bag</button>
+                    <button class="buy-now-btn" onclick="buyNow('ชุดกากีข้าราชการ', 1850, 'qty-2', 'size-2')">Buy Now ⚡</button>
                 </div>
             </div>
         </div>
     </main>
+
+    <section class="review-section">
+        <h2 style="font-size:32px; margin-bottom:10px; color:var(--primary);">เสียงจากลูกค้าจริง</h2>
+        <p style="color:#888;">ความประทับใจจากผู้ใช้งานทั่วประเทศ</p>
+        <div class="review-grid">
+            <div class="review-card">
+                <div style="color:var(--accent); margin-bottom:10px;">⭐⭐⭐⭐⭐</div>
+                <p>“คุณภาพผ้าดีมาก ส่งตรงเวลา โรงเรียนเราสั่งประจำ งานปักละเอียดเป๊ะมากครับ”</p>
+                <strong>- ผอ.โรงเรียนแห่งหนึ่ง</strong>
+            </div>
+            <div class="review-card">
+                <div style="color:var(--accent); margin-bottom:10px;">⭐⭐⭐⭐⭐</div>
+                <p>“สั่งง่าย ตอบไว งานตัดเย็บเนี๊ยบเหมือนแบรนด์นอก ทรงสวยใส่สบายมาก”</p>
+                <strong>- ครูสมชาย</strong>
+            </div>
+            <div class="review-card">
+                <div style="color:var(--accent); margin-bottom:10px;">⭐⭐⭐⭐⭐</div>
+                <p>“มีใบเสร็จรับเงินครบถ้วน นำไปเบิกพัสดุได้ไม่มีปัญหา แนะนำเลยค่ะ”</p>
+                <strong>- ฝ่ายการเงินองค์กร</strong>
+            </div>
+        </div>
+    </section>
 
     <div class="cart-panel" id="cartPanel">
         <div style="display:flex; justify-content:space-between; align-items:center;">
             <h2 style="margin:0; font-size:24px;">Your Bag</h2>
             <span onclick="toggleCart()" style="cursor:pointer; font-size:30px;">&times;</span>
         </div>
-
-        <div id="cartItems" class="cart-items">
-            </div>
-
+        <div id="cartItems" class="cart-items"></div>
         <div class="checkout-form" id="checkoutSection" style="display:none; border-top:1px solid #eee; padding-top:25px;">
-            <h4 style="margin: 0 0 15px 0;">Shipping Information</h4>
-            <input type="text" id="custName" placeholder="ชื่อ-นามสกุล">
-            <input type="tel" id="custPhone" placeholder="เบอร์โทรศัพท์">
-            <textarea id="custAddr" placeholder="ที่อยู่จัดส่งโดยละเอียด" rows="3"></textarea>
+            <input type="text" id="custName" placeholder="ชื่อ-นามสกุล" style="width:100%; padding:14px; margin-bottom:10px; border-radius:10px; border:1px solid #ddd;">
+            <input type="tel" id="custPhone" placeholder="เบอร์โทรศัพท์" style="width:100%; padding:14px; margin-bottom:10px; border-radius:10px; border:1px solid #ddd;">
+            <textarea id="custAddr" placeholder="ที่อยู่จัดส่ง" rows="3" style="width:100%; padding:14px; margin-bottom:10px; border-radius:10px; border:1px solid #ddd; font-family:inherit;"></textarea>
         </div>
-
         <div style="border-top:2px solid #f4f4f4; padding-top:25px;">
             <div style="display:flex; justify-content:space-between; font-size:22px; font-weight:700; margin-bottom:20px;">
                 <span>Total</span>
                 <span>฿<span id="cartTotal">0</span></span>
             </div>
-            
-            <button id="mainActionBtn" onclick="showCheckout()" style="width:100%; padding:20px; background:var(--primary); color:white; border:none; border-radius:18px; font-weight:700; font-size:16px; cursor:pointer;">
-                Review Order
-            </button>
-            
-            <button id="confirmBtn" onclick="sendToLine()" style="display:none; width:100%; padding:20px; background:#06C755; color:white; border:none; border-radius:18px; font-weight:700; font-size:16px; cursor:pointer;">
-                Confirm to LINE
-            </button>
+            <button id="mainActionBtn" onclick="showCheckout()" style="width:100%; padding:20px; background:var(--primary); color:white; border:none; border-radius:18px; font-weight:700;">Review Order</button>
+            <button id="confirmBtn" onclick="sendToLine()" style="display:none; width:100%; padding:20px; background:#06C755; color:white; border:none; border-radius:18px; font-weight:700;">Confirm to LINE</button>
         </div>
     </div>
 
     <footer>
         <h2 style="letter-spacing:4px; text-transform:uppercase; font-size:20px;">Kanokwan Tubthong</h2>
-        <p style="opacity:0.5; font-size:14px; margin-top:10px;">Elite Uniform Tailoring | Nakhon Sawan, Thailand</p>
+        <p style="opacity:0.5; font-size:14px; margin-top:10px;">Elite Uniform Tailoring | Master Tailors Since 1999</p>
     </footer>
 
     <script>
-        let cart = [];
+        let cart = JSON.parse(localStorage.getItem('kanokwan_cart')) || [];
+        window.onload = () => renderCart();
 
-        function updateQty(id, change) {
+        function saveCart() {
+            localStorage.setItem('kanokwan_cart', JSON.stringify(cart));
+            renderCart();
+        }
+
+        function updateQtyUI(id, change) {
             const input = document.getElementById(id);
             let val = parseInt(input.value) + change;
             if (val < 1) val = 1;
@@ -251,14 +333,10 @@
             const panel = document.getElementById('cartPanel');
             const overlay = document.getElementById('overlay');
             panel.classList.toggle('active');
+            overlay.style.display = panel.classList.contains('active') ? 'block' : 'none';
+            setTimeout(() => overlay.style.opacity = panel.classList.contains('active') ? '1' : '0', 10);
             
-            if(panel.classList.contains('active')) {
-                overlay.style.display = 'block';
-                setTimeout(() => overlay.style.opacity = '1', 10);
-            } else {
-                overlay.style.opacity = '0';
-                setTimeout(() => overlay.style.display = 'none', 400);
-                // Reset checkout view when closing
+            if(!panel.classList.contains('active')) {
                 document.getElementById('checkoutSection').style.display = 'none';
                 document.getElementById('mainActionBtn').style.display = 'block';
                 document.getElementById('confirmBtn').style.display = 'none';
@@ -268,47 +346,41 @@
         function addToCart(name, price, qtyId, sizeId) {
             const qty = parseInt(document.getElementById(qtyId).value);
             const size = document.getElementById(sizeId).value;
-            
             const existing = cart.find(item => item.name === name && item.size === size);
-            if(existing) {
-                existing.qty += qty;
-            } else {
-                cart.push({ name, price, qty, size });
-            }
+            
+            if(existing) existing.qty += qty;
+            else cart.push({ name, price, qty, size });
 
-            // UI Feedback
             const toast = document.getElementById('toast');
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 2000);
+            saveCart();
+        }
 
-            renderCart();
-            // Optional: Auto open cart
-            // if(!document.getElementById('cartPanel').classList.contains('active')) toggleCart();
+        function buyNow(name, price, qtyId, sizeId) {
+            addToCart(name, price, qtyId, sizeId);
+            toggleCart();
+            showCheckout();
         }
 
         function renderCart() {
             const container = document.getElementById('cartItems');
             let total = 0;
-            container.innerHTML = '';
-
-            if(cart.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:#888; margin-top:40px;">Your bag is empty.</p>';
-            }
+            container.innerHTML = cart.length === 0 ? '<p style="text-align:center; color:#888; margin-top:40px;">Your bag is empty.</p>' : '';
 
             cart.forEach((item, index) => {
                 total += (item.price * item.qty);
                 container.innerHTML += `
                     <div style="display:flex; justify-content:space-between; margin-bottom:20px; padding-bottom:20px; border-bottom:1px solid #f9f9f9;">
                         <div>
-                            <div style="font-weight:700; font-size:16px;">${item.name}</div>
-                            <div style="font-size:13px; color:#888; margin-top:4px;">Size: ${item.size} | Qty: ${item.qty}</div>
+                            <div style="font-weight:700;">${item.name}</div>
+                            <div style="font-size:13px; color:#888;">Size: ${item.size} | Qty: ${item.qty}</div>
                         </div>
                         <div style="text-align:right;">
                             <div style="font-weight:700;">฿${(item.price * item.qty).toLocaleString()}</div>
-                            <div style="color:red; font-size:12px; cursor:pointer; margin-top:4px;" onclick="removeItem(${index})">Remove</div>
+                            <div style="color:red; font-size:12px; cursor:pointer;" onclick="removeItem(${index})">Remove</div>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             });
 
             document.getElementById('cartTotal').innerText = total.toLocaleString();
@@ -317,38 +389,34 @@
 
         function removeItem(index) {
             cart.splice(index, 1);
-            renderCart();
+            saveCart();
         }
 
         function showCheckout() {
-            if(cart.length === 0) return alert('กรุณาเลือกสินค้าก่อนดำเนินการครับ');
+            if(cart.length === 0) return alert('กรุณาเลือกสินค้าก่อนครับ');
             document.getElementById('checkoutSection').style.display = 'block';
             document.getElementById('mainActionBtn').style.display = 'none';
             document.getElementById('confirmBtn').style.display = 'block';
-            
-            // Scroll to form
-            document.getElementById('checkoutSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function generateOrderId() {
+            return "KNW-" + Math.floor(10000 + Math.random() * 90000);
         }
 
         function sendToLine() {
             const name = document.getElementById('custName').value;
             const phone = document.getElementById('custPhone').value;
             const addr = document.getElementById('custAddr').value;
+            if(!name || !phone || !addr) return alert('กรุณากรอกข้อมูลให้ครบถ้วน');
 
-            if(!name || !phone || !addr) return alert('กรุณากรอกข้อมูลจัดส่งให้ครบถ้วนครับ');
-
-            let msg = `🌟 *NEW ORDER - KANOKWAN*%0A`;
-            msg += `--------------------------%0A`;
-            cart.forEach((item, i) => {
-                msg += `${i+1}. ${item.name} (x${item.qty})%0A   Size: ${item.size}%0A`;
-            });
-            msg += `--------------------------%0A`;
-            msg += `💰 ยอดรวม: ${document.getElementById('cartTotal').innerText} บาท%0A%0A`;
-            msg += `👤 ผู้รับ: ${name}%0A`;
-            msg += `📞 โทร: ${phone}%0A`;
-            msg += `📍 ที่อยู่: ${addr}`;
-
+            const orderId = generateOrderId();
+            let msg = `🧾 *ORDER ID: ${orderId}*%0A🌟 *KANOKWAN OFFICIAL*%0A--------------------------%0A`;
+            cart.forEach((item, i) => msg += `${i+1}. ${item.name} (x${item.qty})%0A   Size: ${item.size}%0A`);
+            msg += `--------------------------%0A💰 ยอดรวม: ${document.getElementById('cartTotal').innerText} บาท%0A👤 ผู้รับ: ${name}%0A📞 โทร: ${phone}%0A📍 ที่อยู่: ${addr}`;
+            
             window.location.href = `https://line.me/R/ti/p/@knwtt?text=${msg}`;
+            cart = [];
+            saveCart();
         }
     </script>
 </body>
