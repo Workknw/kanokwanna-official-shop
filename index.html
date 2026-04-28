@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KANOKWAN | Shopping V2</title>
+    <title>KANOKWAN | Shopping V2.1</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -263,12 +263,7 @@
                             </div>
                             
                             <div style="text-align:right;" id="price-${i}">
-                                ${p.isSale && p.salePrice > 0 ? `
-                                    <div style="text-decoration:line-through; color:#999; font-size:13px;">฿${Number(p.price).toLocaleString()}</div>
-                                    <div style="font-weight:700; font-size:22px; color:red;">฿${Number(p.salePrice).toLocaleString()}</div>
-                                ` : `
-                                    <div style="font-weight:700; font-size:22px; color:var(--primary);">฿${Number(p.price).toLocaleString()}</div>
-                                `}
+                                <div style="font-weight:700; font-size:22px; color:var(--primary);">฿${Number(p.price).toLocaleString()}</div>
                             </div>
                         </div>
 
@@ -281,11 +276,19 @@
                             }
                         </select>
 
-                        <button class="add-to-bag-btn" onclick="addToCart('${p.name}', ${p.isSale ? p.salePrice : p.price}, 'qty-${i}', 'size-${i}')">เพิ่มลงในตะกร้า</button>
-                        <button class="buy-now-btn" onclick="buyNow('${p.name}', ${p.isSale ? p.salePrice : p.price}, 'qty-${i}', 'size-${i}')">ซื้อเลย⚡</button>
+                        <button class="add-to-bag-btn" onclick="addToCart('${p.name}', 'qty-${i}', 'size-${i}')">เพิ่มลงในตะกร้า</button>
+                        <button class="buy-now-btn" onclick="buyNow('${p.name}', 'qty-${i}', 'size-${i}')">ซื้อเลย⚡</button>
                     </div>
                 </div>
                 `;
+
+                // ✅ Point 1 Fix: Initial Sync - Ensure correct price displays immediately on load
+                setTimeout(() => {
+                    const select = document.getElementById(`size-${i}`);
+                    if(select) {
+                        updatePriceUI(select, `price-${i}`, p.price, p.salePrice || 0, p.isSale);
+                    }
+                }, 0);
             });
         }
 
@@ -306,13 +309,14 @@
             }
         }
 
-        function addToCart(name, basePrice, qtyId, sizeId) {
+        // ✅ Point 2 Fix: Removed basePrice argument to prevent bugs and use data-price directly
+        function addToCart(name, qtyId, sizeId) {
             const qtyInput = document.getElementById(qtyId);
             const sizeSelect = document.getElementById(sizeId);
             const qty = parseInt(qtyInput.value);
             const size = sizeSelect.value;
             const selectedOption = sizeSelect.options[sizeSelect.selectedIndex];
-            const price = Number(selectedOption.dataset.price) || basePrice;
+            const price = Number(selectedOption.dataset.price); // Direct reliable data
 
             const existing = cart.find(item => item.name === name && item.size === size);
             if(existing) existing.qty += qty;
@@ -350,8 +354,8 @@
             }
         }
 
-        function buyNow(name, price, qtyId, sizeId) {
-            addToCart(name, price, qtyId, sizeId);
+        function buyNow(name, qtyId, sizeId) {
+            addToCart(name, qtyId, sizeId);
             toggleCart();
             showCheckout();
         }
