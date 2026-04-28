@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KNWT Management System | Admin Dashboard Pro</title>
+<title>KNWT Management System | Admin Dashboard Pro V2</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,12 +25,12 @@ body {
     background-color: var(--bg);
     color: var(--text);
     margin: 0; padding: 40px 20px;
-    display: none; /* ซ่อน body ไว้ก่อนตรวจสอบรหัสผ่าน */
+    display: none; /* ล็อคระบบ */
 }
 
 .admin-container {
     background: var(--card);
-    max-width: 1000px;
+    max-width: 1100px;
     margin: 0 auto;
     padding: 40px;
     border-radius: 16px;
@@ -48,9 +48,11 @@ input, select, textarea {
     padding:12px; border-radius:8px; border:1px solid #ddd;
     box-sizing: border-box; font-family: inherit; transition: 0.2s;
 }
+input[type="checkbox"] { display: inline-block; width: auto; margin-right: 8px; margin-bottom: 0; vertical-align: middle; }
+.checkbox-group { background: #f9f9f9; padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #eee; }
+
 textarea { resize: vertical; min-height: 80px; }
 input[type="file"] { padding: 8px; background: #fafafa; border: 1px dashed #ccc; cursor: pointer; }
-input:focus, textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0, 77, 42, 0.1); }
 
 .row { display: flex; gap: 10px; }
 .row > div { flex: 1; }
@@ -66,11 +68,11 @@ button {
 .btn-export { background: #555; color: white; margin-top: 20px; width: 100%; }
 
 .preview-section { flex: 0.8; background: #fafafa; border: 2px dashed #ddd; border-radius: 12px; padding: 20px; text-align: center; position: sticky; top: 20px; height: fit-content; }
-.preview-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+.preview-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); position: relative; }
+.badge-best { position: absolute; top: 10px; right: 10px; background: #ffc107; color: #000; font-size: 10px; padding: 3px 8px; border-radius: 20px; font-weight: bold; }
 #preview-img-tag { width: 100%; height: 220px; object-fit: cover; background: #eee; }
 
-.list-section { max-width: 1000px; margin: 30px auto 0; }
-.search-bar { margin-bottom: 20px; }
+.list-section { max-width: 1100px; margin: 30px auto 0; }
 .product-item {
     background: white; padding: 15px 20px; margin-bottom: 10px; border-radius: 10px;
     display: flex; justify-content: space-between; align-items: center;
@@ -79,10 +81,7 @@ button {
 .status-badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; color: white; margin-left: 5px; }
 .status-active { background: #4caf50; }
 .status-inactive { background: #9e9e9e; }
-
-.item-btns { display: flex; gap: 8px; }
-.btn-edit { background: var(--warning); color: white; padding: 8px 12px; border-radius: 6px; border: none; cursor: pointer; }
-.btn-delete { background: var(--danger); color: white; padding: 8px 12px; border-radius: 6px; border: none; cursor: pointer; }
+.sale-label { color: var(--danger); font-weight: bold; font-size: 0.9em; }
 
 @media (max-width: 768px) {
     .admin-container { flex-direction: column; }
@@ -94,24 +93,44 @@ button {
 
 <div class="admin-container">
     <div class="form-section">
-        <h2 id="form-title">📦 เพิ่มสินค้าใหม่</h2>
+        <h2 id="form-title">📦 เพิ่มสินค้าใหม่ (V2)</h2>
         
         <label>ชื่อสินค้า</label>
         <input id="name" placeholder="ชื่อสินค้า" oninput="updatePreview()">
 
         <div class="row">
             <div>
-                <label>ราคา (บาท)</label>
-                <input id="price" type="number" placeholder="0" oninput="updatePreview()">
+                <label>ราคาปกติ (บาท)</label>
+                <input id="price" type="number" placeholder="เช่น 390" oninput="updatePreview()">
             </div>
+            <div>
+                <label>ราคาลดพิเศษ (ถ้ามี)</label>
+                <input id="salePrice" type="number" placeholder="เช่น 290" oninput="updatePreview()">
+            </div>
+        </div>
+
+        <div class="checkbox-group">
+            <label style="color:#333; margin-bottom:0; cursor:pointer;">
+                <input type="checkbox" id="isSale" onchange="updatePreview()"> 🔥 เปิดโหมดลดราคา (Sale)
+            </label>
+            <label style="color:#333; margin-bottom:0; cursor:pointer; margin-top:10px;">
+                <input type="checkbox" id="isBestSeller" onchange="updatePreview()"> ⭐ สินค้าขายดี (Best Seller)
+            </label>
+        </div>
+
+        <div class="row">
             <div>
                 <label>จำนวนสต็อก (Stock)</label>
                 <input id="stock" type="number" placeholder="0" oninput="updatePreview()">
             </div>
+            <div>
+                <label>ขายไปแล้ว (Sold)</label>
+                <input id="sold" type="number" placeholder="0" oninput="updatePreview()">
+            </div>
         </div>
 
         <label>รายละเอียดสินค้า</label>
-        <textarea id="desc" placeholder="บรรยายสรรพคุณสินค้า..." oninput="updatePreview()"></textarea>
+        <textarea id="desc" placeholder="บรรยายสรรพคุณ..." oninput="updatePreview()"></textarea>
 
         <label>รูปภาพสินค้า (จำกัด 2MB)</label>
         <input type="file" id="fileInput" accept="image/*" onchange="handleImageUpload(event)">
@@ -119,19 +138,19 @@ button {
         <div class="row">
             <div>
                 <label>หมวดหมู่</label>
-                <input id="category" placeholder="เช่น เสื้อผ้า, อุปกรณ์" oninput="updatePreview()">
+                <input id="category" placeholder="เสื้อยืด, กางเกง" oninput="updatePreview()">
             </div>
             <div>
-                <label>สถานะการแสดงผล</label>
+                <label>สถานะสินค้า</label>
                 <select id="status" onchange="updatePreview()">
                     <option value="active">เปิดการขาย (Active)</option>
-                    <option value="inactive">ปิดการขาย (Hidden)</option>
+                    <option value="inactive">ซ่อนสินค้า (Hidden)</option>
                 </select>
             </div>
         </div>
         
-        <label>ไซส์ (แยกด้วยคอมม่า)</label>
-        <input id="sizes" placeholder="S, M, L, XL" oninput="updatePreview()">
+        <label>ไซส์และราคา (รูปแบบ S:290, M:320 หรือระบุแค่ไซส์ S, M, L)</label>
+        <input id="sizes" placeholder="เช่น S:290, M:320, L:350" oninput="updatePreview()">
 
         <div class="btn-group">
             <button id="main-btn" class="btn-save" onclick="handleSave()">บันทึกข้อมูลสินค้า</button>
@@ -142,17 +161,23 @@ button {
     </div>
 
     <div class="preview-section">
-        <p style="font-size: 12px; color: #888; margin-bottom: 10px;">Live Preview (หน้าตาในเว็บขาย)</p>
+        <p style="font-size: 12px; color: #888; margin-bottom: 10px;">Live Preview (เวอร์ชันลูกค้าเห็น)</p>
         <div class="preview-card">
+            <div id="badge-best" class="badge-best" style="display:none;">Best Seller</div>
             <img id="preview-img-tag" src="https://via.placeholder.com/300x200?text=No+Image" alt="Preview">
             <div style="padding: 15px; text-align: left;">
-                <div style="display:flex; justify-content: space-between; align-items: flex-start;">
-                    <p id="preview-name" style="margin:0; font-weight: 600;">ชื่อสินค้า</p>
-                    <span id="preview-status" class="status-badge status-active">Active</span>
+                <p id="preview-name" style="margin:0; font-weight: 600;">ชื่อสินค้า</p>
+                
+                <div id="price-area">
+                    <p id="preview-price" style="margin:5px 0; color: var(--accent); font-weight: bold; font-size: 1.2em;">฿ 0</p>
                 </div>
-                <p id="preview-price" style="margin:5px 0; color: var(--accent); font-weight: bold; font-size: 1.2em;">฿ 0</p>
-                <p id="preview-stock" style="margin:0; font-size: 12px; color: #555;">สต็อก: 0 ชิ้น</p>
-                <small id="preview-cat" style="color: #888; display: block; margin-top: 5px;"></small>
+
+                <div style="display:flex; justify-content: space-between; font-size: 11px; color: #666; margin-top: 5px;">
+                    <span id="preview-stock">สต็อก: 0</span>
+                    <span id="preview-sold">ขายแล้ว: 0 ชิ้น</span>
+                </div>
+                
+                <p id="preview-sizes-list" style="font-size: 10px; color: #888; margin-top: 5px;"></p>
                 <p id="preview-desc" style="font-size: 11px; color: #666; margin-top: 8px; border-top: 1px solid #eee; padding-top: 5px;"></p>
             </div>
         </div>
@@ -160,19 +185,19 @@ button {
 </div>
 
 <div class="list-section">
-    <h3>📋 รายการสินค้าในระบบ</h3>
+    <h3>📋 รายการสินค้าทั้งหมด</h3>
     <div class="search-bar">
-        <input id="searchBox" placeholder="🔍 ค้นหาด้วยชื่อสินค้า หรือ หมวดหมู่..." oninput="renderProducts()" style="margin-bottom: 0;">
+        <input id="searchBox" placeholder="🔍 ค้นหาชื่อสินค้า หรือหมวดหมู่..." oninput="renderProducts()" style="margin-bottom: 20px; padding:12px; width:100%; border-radius:8px; border:1px solid #ddd;">
     </div>
     <div id="productList"></div>
 </div>
 
 <script>
-// 🔒 1. ล็อคระบบหลังบ้าน (รหัสผ่านเริ่มต้นคือ 1234)
-const adminPass = prompt("กรุณากรอกรหัสผ่าน Admin เพื่อเข้าใช้งาน:");
+// 🔒 1. ล็อคระบบหลังบ้าน
+const adminPass = prompt("Admin Password:");
 if(adminPass !== "1234") {
     alert("รหัสผ่านไม่ถูกต้อง!");
-    document.body.innerHTML = "<div style='text-align:center; padding-top:100px;'><h1>🚫 Access Denied</h1><p>คุณไม่ได้รับอนุญาตให้เข้าถึงหน้านี้</p></div>";
+    document.body.innerHTML = "<h1>🚫 Access Denied</h1>";
     document.body.style.display = "block";
 } else {
     document.body.style.display = "block";
@@ -189,15 +214,8 @@ window.onload = () => {
 function handleImageUpload(event) {
     const file = event.target.files[0];
     if (!file) return;
-
-    if (file.size > 2 * 1024 * 1024) {
-        alert("⚠️ รูปใหญ่เกิน 2MB กรุณาลดขนาดรูปภาพก่อนครับ");
-        event.target.value = "";
-        return;
-    }
-
     const reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = (e) => {
         imageBase64 = e.target.result;
         document.getElementById('preview-img-tag').src = imageBase64;
     };
@@ -206,85 +224,81 @@ function handleImageUpload(event) {
 
 function updatePreview() {
     const name = document.getElementById('name').value || "ชื่อสินค้า";
-    const price = document.getElementById('price').value || "0";
-    const stock = document.getElementById('stock').value || "0";
-    const cat = document.getElementById('category').value;
+    const price = Number(document.getElementById('price').value) || 0;
+    const salePrice = Number(document.getElementById('salePrice').value) || 0;
+    const isSale = document.getElementById('isSale').checked;
+    const isBest = document.getElementById('isBestSeller').checked;
+    const stock = document.getElementById('stock').value || 0;
+    const sold = document.getElementById('sold').value || 0;
     const desc = document.getElementById('desc').value || "";
-    const status = document.getElementById('status').value;
+    const sizes = document.getElementById('sizes').value;
 
     document.getElementById('preview-name').innerText = name;
-    document.getElementById('preview-price').innerText = `฿ ${Number(price).toLocaleString()}`;
-    document.getElementById('preview-stock').innerText = `คงเหลือในสต็อก: ${stock} ชิ้น`;
-    document.getElementById('preview-img-tag').src = imageBase64 || "https://via.placeholder.com/300x200?text=No+Image";
-    document.getElementById('preview-cat').innerText = cat ? `หมวด: ${cat}` : '';
-    document.getElementById('preview-desc').innerText = desc;
+    document.getElementById('badge-best').style.display = isBest ? 'block' : 'none';
     
-    const statusBadge = document.getElementById('preview-status');
-    statusBadge.innerText = status === 'active' ? 'Active' : 'Hidden';
-    statusBadge.className = `status-badge ${status === 'active' ? 'status-active' : 'status-inactive'}`;
+    // Preview ราคา
+    const priceArea = document.getElementById('price-area');
+    if(isSale && salePrice > 0) {
+        priceArea.innerHTML = `
+            <p style="margin:5px 0;">
+                <span style="text-decoration: line-through; color:#999; font-size: 0.9em;">฿${price.toLocaleString()}</span>
+                <span style="color:red; font-weight:bold; font-size: 1.2em; margin-left:8px;">฿${salePrice.toLocaleString()}</span>
+            </p>`;
+    } else {
+        priceArea.innerHTML = `<p style="margin:5px 0; color: var(--accent); font-weight: bold; font-size: 1.2em;">฿ ${price.toLocaleString()}</p>`;
+    }
+
+    document.getElementById('preview-stock').innerText = `สต็อก: ${stock}`;
+    document.getElementById('preview-sold').innerText = `ขายแล้ว: ${sold}`;
+    document.getElementById('preview-desc').innerText = desc;
+    document.getElementById('preview-sizes-list').innerText = sizes ? `ไซส์ที่พร้อม: ${sizes}` : "";
+    if(imageBase64) document.getElementById('preview-img-tag').src = imageBase64;
 }
 
 function handleSave() {
-    const nameInput = document.getElementById('name');
-    const priceInput = document.getElementById('price');
-    const stockInput = document.getElementById('stock');
-    const btn = document.getElementById('main-btn');
-
-    // 🔒 Advanced Validation & Stock Control
-    if (!nameInput.value || !priceInput.value) {
-        alert("⚠️ กรุณากรอกชื่อและราคาด้วยครับ!");
-        return;
-    }
-    if (Number(priceInput.value) < 0) {
-        alert("⚠️ ราคาไม่สามารถติดลบได้");
-        return;
-    }
-    if (Number(stockInput.value) < 0) {
-        alert("⚠️ จำนวนสต็อกไม่สามารถติดลบได้");
-        return;
-    }
-    if (imageBase64 === "") {
-        if (!confirm("⚠️ ไม่มีรูปสินค้า ต้องการเพิ่มต่อไหม?")) return;
-    }
+    const name = document.getElementById('name').value;
+    const price = document.getElementById('price').value;
+    
+    if (!name || !price) return alert("กรุณากรอกชื่อและราคาปกติ!");
 
     let products = JSON.parse(localStorage.getItem('products')) || [];
-    const cleanSizes = document.getElementById('sizes').value.split(',').map(s => s.trim()).filter(s => s !== '');
 
-    const product = {
+    // ระบบจัดการข้อมูลไซส์ใหม่
+    const sizeRaw = document.getElementById('sizes').value;
+    const sizeData = sizeRaw.split(',').map(item => {
+        const parts = item.split(':');
+        return {
+            size: parts[0].trim(),
+            price: parts[1] ? Number(parts[1].trim()) : Number(price)
+        };
+    }).filter(s => s.size !== "");
+
+    const newProduct = {
         id: editIndex !== null ? products[editIndex].id : Date.now(),
-        name: nameInput.value,
-        price: priceInput.value,
-        stock: stockInput.value || 0,
+        name: name,
+        price: Number(price),
+        salePrice: Number(document.getElementById('salePrice').value) || 0,
+        isSale: document.getElementById('isSale').checked,
+        isBestSeller: document.getElementById('isBestSeller').checked,
+        stock: Number(document.getElementById('stock').value) || 0,
+        sold: Number(document.getElementById('sold').value) || 0,
         description: document.getElementById('desc').value,
-        status: document.getElementById('status').value, // เก็บสถานะ active/inactive
-        img: imageBase64,
         category: document.getElementById('category').value,
-        sizes: cleanSizes
+        status: document.getElementById('status').value,
+        sizes: sizeData,
+        img: imageBase64
     };
 
     if (editIndex !== null) {
-        if (!confirm('ยืนยันการแก้ไขข้อมูล?')) return;
-        products[editIndex] = product;
+        products[editIndex] = newProduct;
     } else {
-        products.push(product);
+        products.push(newProduct);
     }
 
-    btn.disabled = true;
-    btn.innerText = '⏳ กำลังบันทึก...';
-
-    setTimeout(() => {
-        try {
-            localStorage.setItem('products', JSON.stringify(products));
-            alert('✅ บันทึกสำเร็จ!');
-            resetForm();
-            renderProducts();
-        } catch (e) {
-            alert("⚠️ ข้อมูลเต็ม! กรุณาลดขนาดรูปภาพ");
-        } finally {
-            btn.disabled = false;
-            btn.innerText = editIndex !== null ? 'ยืนยันการแก้ไข' : 'เพิ่มสินค้า';
-        }
-    }, 500);
+    localStorage.setItem('products', JSON.stringify(products));
+    alert("บันทึกสำเร็จ!");
+    resetForm();
+    renderProducts();
 }
 
 function renderProducts() {
@@ -292,70 +306,54 @@ function renderProducts() {
     const keyword = document.getElementById('searchBox').value.toLowerCase();
     let products = JSON.parse(localStorage.getItem('products')) || [];
 
-    // 🔍 Search & Filter
-    let filtered = products.filter(p => 
-        p.name.toLowerCase().includes(keyword) || 
-        (p.category && p.category.toLowerCase().includes(keyword))
-    );
-
-    if (filtered.length === 0) {
-        list.innerHTML = '<p style="color:#888; text-align:center; padding:20px;">ไม่พบสินค้าในระบบ</p>';
-        return;
-    }
-
+    let filtered = products.filter(p => p.name.toLowerCase().includes(keyword));
     list.innerHTML = '';
-    [...filtered].reverse().forEach((p) => {
+
+    [...filtered].reverse().forEach((p, idx) => {
         const originalIndex = products.findIndex(item => item.id === p.id);
-        
-        // 👁️ ตกแต่งรายการใน Admin ให้เห็นสถานะชัดเจน
         list.innerHTML += `
-        <div class="product-item">
-            <div class="item-info">
-                <strong>${p.name}</strong> 
-                <span class="status-badge ${p.status === 'active' ? 'status-active' : 'status-inactive'}">
-                    ${p.status === 'active' ? 'เปิดการขาย' : 'ซ่อนไว้'}
-                </span>
-                <br>
-                <small>฿${Number(p.price).toLocaleString()} | สต็อก: ${p.stock} | ${p.category || 'ทั่วไป'}</small>
-            </div>
-            <div class="item-btns">
-                <button class="btn-edit" onclick="editProduct(${originalIndex})">แก้ไข</button>
-                <button class="btn-delete" onclick="deleteProduct(${originalIndex})">ลบ</button>
-            </div>
-        </div>
-        `;
+            <div class="product-item">
+                <div>
+                    <strong>${p.name}</strong> 
+                    ${p.isBestSeller ? '⭐' : ''} 
+                    ${p.isSale ? '<span class="sale-label">SALE</span>' : ''}
+                    <br>
+                    <small>฿${p.price} | สต็อก: ${p.stock} | ขายแล้ว: ${p.sold || 0}</small>
+                </div>
+                <div class="item-btns">
+                    <button class="btn-edit" onclick="editProduct(${originalIndex})">แก้ไข</button>
+                    <button class="btn-delete" onclick="deleteProduct(${originalIndex})">ลบ</button>
+                </div>
+            </div>`;
     });
 }
 
-function deleteProduct(index) {
-    if (confirm('‼️ ต้องการลบสินค้านี้ใช่หรือไม่?')) {
-        let products = JSON.parse(localStorage.getItem('products')) || [];
-        products.splice(index, 1);
-        localStorage.setItem('products', JSON.stringify(products));
-        renderProducts();
-    }
-}
-
 function editProduct(index) {
-    let products = JSON.parse(localStorage.getItem('products')) || [];
+    const products = JSON.parse(localStorage.getItem('products'));
     const p = products[index];
 
     document.getElementById('name').value = p.name;
     document.getElementById('price').value = p.price;
-    document.getElementById('stock').value = p.stock || 0;
-    document.getElementById('desc').value = p.description || "";
+    document.getElementById('salePrice').value = p.salePrice || "";
+    document.getElementById('isSale').checked = p.isSale || false;
+    document.getElementById('isBestSeller').checked = p.isBestSeller || false;
+    document.getElementById('stock').value = p.stock;
+    document.getElementById('sold').value = p.sold || 0;
+    document.getElementById('desc').value = p.description;
     document.getElementById('category').value = p.category;
-    document.getElementById('status').value = p.status || "active";
-    document.getElementById('sizes').value = p.sizes.join(', ');
+    document.getElementById('status').value = p.status;
+    
+    // แปลงไซส์กลับเป็นข้อความ S:200, M:250
+    const sizeText = p.sizes ? p.sizes.map(s => `${s.size}:${s.price}`).join(', ') : "";
+    document.getElementById('sizes').value = sizeText;
 
     imageBase64 = p.img;
     editIndex = index;
-
+    
     document.getElementById('form-title').innerText = "✏️ แก้ไขสินค้า";
     document.getElementById('main-btn').innerText = "ยืนยันการแก้ไข";
-    document.getElementById('main-btn').style.background = "var(--warning)";
     document.getElementById('cancel-btn').style.display = "inline-block";
-
+    
     updatePreview();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -363,37 +361,38 @@ function editProduct(index) {
 function resetForm() {
     editIndex = null;
     imageBase64 = "";
-    document.getElementById('fileInput').value = "";
     document.getElementById('name').value = '';
     document.getElementById('price').value = '';
+    document.getElementById('salePrice').value = '';
+    document.getElementById('isSale').checked = false;
+    document.getElementById('isBestSeller').checked = false;
     document.getElementById('stock').value = '';
+    document.getElementById('sold').value = '';
     document.getElementById('desc').value = '';
-    document.getElementById('category').value = '';
     document.getElementById('sizes').value = '';
-    document.getElementById('status').value = 'active';
-    
-    document.getElementById('form-title').innerText = "📦 เพิ่มสินค้าใหม่";
-    document.getElementById('main-btn').innerText = "เพิ่มสินค้า";
-    document.getElementById('main-btn').style.background = "var(--primary)";
+    document.getElementById('form-title').innerText = "📦 เพิ่มสินค้าใหม่ (V2)";
+    document.getElementById('main-btn').innerText = "บันทึกข้อมูลสินค้า";
     document.getElementById('cancel-btn').style.display = "none";
-    
     updatePreview();
+}
+
+function deleteProduct(index) {
+    if(confirm("ลบสินค้านี้?")) {
+        let products = JSON.parse(localStorage.getItem('products'));
+        products.splice(index, 1);
+        localStorage.setItem('products', JSON.stringify(products));
+        renderProducts();
+    }
 }
 
 function exportData() {
     const data = localStorage.getItem('products');
-    if(!data || data === "[]") return alert("ไม่มีข้อมูลให้ Export");
     const blob = new Blob([data], {type: "application/json"});
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = `backup_kanokwan_${new Date().toLocaleDateString()}.json`;
+    a.download = `kanokwan_v2_backup.json`;
     a.click();
 }
-
-window.addEventListener('storage', (e) => {
-    if (e.key === 'products') renderProducts();
-});
 </script>
-
 </body>
 </html>
