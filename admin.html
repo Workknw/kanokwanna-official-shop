@@ -25,6 +25,7 @@ body {
     background-color: var(--bg);
     color: var(--text);
     margin: 0; padding: 40px 20px;
+    display: none; /* ซ่อน body ไว้ก่อนตรวจสอบรหัสผ่าน */
 }
 
 .admin-container {
@@ -121,7 +122,7 @@ button {
                 <input id="category" placeholder="เช่น เสื้อผ้า, อุปกรณ์" oninput="updatePreview()">
             </div>
             <div>
-                <label>สถานะ</label>
+                <label>สถานะการแสดงผล</label>
                 <select id="status" onchange="updatePreview()">
                     <option value="active">เปิดการขาย (Active)</option>
                     <option value="inactive">ปิดการขาย (Hidden)</option>
@@ -167,6 +168,16 @@ button {
 </div>
 
 <script>
+// 🔒 1. ล็อคระบบหลังบ้าน (รหัสผ่านเริ่มต้นคือ 1234)
+const adminPass = prompt("กรุณากรอกรหัสผ่าน Admin เพื่อเข้าใช้งาน:");
+if(adminPass !== "1234") {
+    alert("รหัสผ่านไม่ถูกต้อง!");
+    document.body.innerHTML = "<div style='text-align:center; padding-top:100px;'><h1>🚫 Access Denied</h1><p>คุณไม่ได้รับอนุญาตให้เข้าถึงหน้านี้</p></div>";
+    document.body.style.display = "block";
+} else {
+    document.body.style.display = "block";
+}
+
 let editIndex = null;
 let imageBase64 = "";
 
@@ -219,7 +230,7 @@ function handleSave() {
     const stockInput = document.getElementById('stock');
     const btn = document.getElementById('main-btn');
 
-    // 1. Advanced Validation
+    // 🔒 Advanced Validation & Stock Control
     if (!nameInput.value || !priceInput.value) {
         alert("⚠️ กรุณากรอกชื่อและราคาด้วยครับ!");
         return;
@@ -228,8 +239,12 @@ function handleSave() {
         alert("⚠️ ราคาไม่สามารถติดลบได้");
         return;
     }
+    if (Number(stockInput.value) < 0) {
+        alert("⚠️ จำนวนสต็อกไม่สามารถติดลบได้");
+        return;
+    }
     if (imageBase64 === "") {
-        if (!confirm("⚠️ คุณยังไม่ได้ใส่รูปภาพสินค้า ยืนยันจะบันทึกหรือไม่?")) return;
+        if (!confirm("⚠️ ไม่มีรูปสินค้า ต้องการเพิ่มต่อไหม?")) return;
     }
 
     let products = JSON.parse(localStorage.getItem('products')) || [];
@@ -241,7 +256,7 @@ function handleSave() {
         price: priceInput.value,
         stock: stockInput.value || 0,
         description: document.getElementById('desc').value,
-        status: document.getElementById('status').value,
+        status: document.getElementById('status').value, // เก็บสถานะ active/inactive
         img: imageBase64,
         category: document.getElementById('category').value,
         sizes: cleanSizes
@@ -264,7 +279,7 @@ function handleSave() {
             resetForm();
             renderProducts();
         } catch (e) {
-            alert("⚠️ ข้อมูลเต็ม! (localStorage เต็ม) กรุณาลบสินค้าเก่าออก หรือลดขนาดรูปภาพ");
+            alert("⚠️ ข้อมูลเต็ม! กรุณาลดขนาดรูปภาพ");
         } finally {
             btn.disabled = false;
             btn.innerText = editIndex !== null ? 'ยืนยันการแก้ไข' : 'เพิ่มสินค้า';
@@ -277,30 +292,31 @@ function renderProducts() {
     const keyword = document.getElementById('searchBox').value.toLowerCase();
     let products = JSON.parse(localStorage.getItem('products')) || [];
 
-    // 2. Search & Filter
+    // 🔍 Search & Filter
     let filtered = products.filter(p => 
         p.name.toLowerCase().includes(keyword) || 
         (p.category && p.category.toLowerCase().includes(keyword))
     );
 
     if (filtered.length === 0) {
-        list.innerHTML = '<p style="color:#888; text-align:center; padding:20px;">ไม่พบสินค้าที่ค้นหา</p>';
+        list.innerHTML = '<p style="color:#888; text-align:center; padding:20px;">ไม่พบสินค้าในระบบ</p>';
         return;
     }
 
     list.innerHTML = '';
-    // แสดงรายการล่าสุดขึ้นก่อน
     [...filtered].reverse().forEach((p) => {
-        // หา index จริงใน array หลัก
         const originalIndex = products.findIndex(item => item.id === p.id);
         
+        // 👁️ ตกแต่งรายการใน Admin ให้เห็นสถานะชัดเจน
         list.innerHTML += `
         <div class="product-item">
             <div class="item-info">
                 <strong>${p.name}</strong> 
-                <span class="status-badge ${p.status === 'active' ? 'status-active' : 'status-inactive'}">${p.status}</span>
+                <span class="status-badge ${p.status === 'active' ? 'status-active' : 'status-inactive'}">
+                    ${p.status === 'active' ? 'เปิดการขาย' : 'ซ่อนไว้'}
+                </span>
                 <br>
-                <small>ราคา: ฿${Number(p.price).toLocaleString()} | คลัง: ${p.stock} | หมวด: ${p.category || '-'}</small>
+                <small>฿${Number(p.price).toLocaleString()} | สต็อก: ${p.stock} | ${p.category || 'ทั่วไป'}</small>
             </div>
             <div class="item-btns">
                 <button class="btn-edit" onclick="editProduct(${originalIndex})">แก้ไข</button>
@@ -370,7 +386,7 @@ function exportData() {
     const blob = new Blob([data], {type: "application/json"});
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = `products_backup_${new Date().toLocaleDateString()}.json`;
+    a.download = `backup_kanokwan_${new Date().toLocaleDateString()}.json`;
     a.click();
 }
 
