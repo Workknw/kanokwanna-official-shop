@@ -211,7 +211,7 @@
         <div class="nav-content">
             <a href="#" class="brand-logo">KANOKWAN</a>
             <div class="nav-right">
-                <input type="text" placeholder="ค้นหาชุดเครื่องแบบ..." class="search-input">
+                <input type="text" placeholder="ค้นหาสินค้า..." class="search-input">
                 <div onclick="toggleCart()" style="cursor:pointer; background:var(--dark); color:white; padding:10px 22px; border-radius:50px; font-size:14px; font-weight:600;">
                     🛒 รายการสินค้า (<span id="cart-count">0</span>)
                 </div>
@@ -382,7 +382,7 @@
 
     <div class="cart-panel" id="cartPanel">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h2 style="margin:0; font-size:24px;">🛒 รถเข็นของคุณ</h2>
+            <h2 style="margin:0; font-size:24px;">🛒 รายการสินค้าของคุณ</h2>
             <span onclick="toggleCart()" style="cursor:pointer; font-size:30px;">&times;</span>
         </div>
         <div id="cartItems" class="cart-items"></div>
@@ -459,7 +459,7 @@
         function renderCart() {
             const container = document.getElementById('cartItems');
             let total = 0;
-            container.innerHTML = cart.length === 0 ? '<p style="text-align:center; color:#888; margin-top:40px;">Your bag is empty.</p>' : '';
+            container.innerHTML = cart.length === 0 ? '<p style="text-align:center; color:#888; margin-top:40px;">รถเข็นของคุณว่างเปล่า</p>' : '';
 
             cart.forEach((item, index) => {
                 total += (item.price * item.qty);
@@ -471,7 +471,7 @@
                         </div>
                         <div style="text-align:right;">
                             <div style="font-weight:700;">฿${(item.price * item.qty).toLocaleString()}</div>
-                            <div style="color:red; font-size:12px; cursor:pointer;" onclick="removeItem(${index})">Remove</div>
+                            <div style="color:red; font-size:12px; cursor:pointer;" onclick="removeItem(${index})">นำสินค้าออก</div>
                         </div>
                     </div>`;
             });
