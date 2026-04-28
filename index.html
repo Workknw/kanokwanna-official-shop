@@ -49,62 +49,17 @@
         .search-input:focus { width: 280px; background: white; border-color: var(--accent); }
 
         /* --- Hero --- */
-        .hero-slider {
-    height: 70vh;
-    position: relative;
-    overflow: hidden;
-    margin-top: 38px;
-}
-
-.slides {
-    width: 100%;
-    height: 100%;
-    position: relative;
-}
-
-.slide {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    transition: opacity 1s ease-in-out;
-}
-
-.slide.active {
-    opacity: 1;
-    z-index: 1;
-}
-
-.slide img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.hero-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 40, 20, 0.45);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2;
-    text-align: center;
-    color: white;
-}
-
-.hero-content h1 {
-    font-size: clamp(2.5rem, 8vw, 4.5rem);
-    margin: 0;
-    font-weight: 700;
-    line-height: 1.1;
-}
-
-.hero-content p {
-    margin-top: 20px;
-    font-size: 1.1rem;
-    opacity: 0.9;
-}
+        .hero-slider { height: 70vh; position: relative; overflow: hidden; margin-top: 38px; }
+        .slides { width: 100%; height: 100%; position: relative; }
+        .slide { position: absolute; width: 100%; height: 100%; opacity: 0; transition: opacity 1s ease-in-out; }
+        .slide.active { opacity: 1; z-index: 1; }
+        .slide img { width: 100%; height: 100%; object-fit: cover; }
+        .hero-overlay {
+            position: absolute; inset: 0; background: rgba(0, 40, 20, 0.45);
+            display: flex; justify-content: center; align-items: center; z-index: 2; text-align: center; color: white;
+        }
+        .hero-content h1 { font-size: clamp(2.5rem, 8vw, 4.5rem); margin: 0; font-weight: 700; line-height: 1.1; }
+        .hero-content p { margin-top: 20px; font-size: 1.1rem; opacity: 0.9; }
 
         /* --- Trust Bar --- */
         .trust-bar {
@@ -112,10 +67,6 @@
             padding: 20px; background: white; border-bottom: 1px solid #eee;
             font-size: 13px; font-weight: 600; color: #555;
         }
-
-        /* --- Brand Story --- */
-        .story-section { padding: 80px 40px; text-align: center; background: white; border-bottom: 1px solid #eee; }
-        .story-content { max-width: 800px; margin: 0 auto; }
 
         /* --- Services --- */
         .services-section { background: white; padding: 80px 40px; text-align: center; }
@@ -129,7 +80,7 @@
         }
         .service-item:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.05); background: white; border-color: var(--accent); }
 
-        /* --- Product Card --- */
+        /* --- Product Card & Grid --- */
         .container { max-width: 1400px; margin: 60px auto; padding: 0 40px; }
         .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 40px; }
         .product-card {
@@ -142,6 +93,7 @@
         .img-wrapper { width: 100%; height: 380px; background: #eee; overflow: hidden; }
         .img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: 0.8s; }
         .product-card:hover .img-wrapper img { transform: scale(1.08); }
+        .card-body { padding: 20px 20px 24px; }
 
         /* --- Buttons --- */
         button { cursor: pointer; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); border: none; font-family: inherit; }
@@ -183,26 +135,18 @@
         .review-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 1200px; margin: 40px auto; }
         .review-card { padding: 30px; border-radius: 20px; background: var(--light); text-align: left; }
 
-        /* --- Footer --- */
         footer { background: var(--dark); color: white; padding: 60px 40px; text-align: center; }
 
         @media (max-width: 768px) {
             .nav-content { padding: 0 20px; }
             .search-input { display: none; }
             .cart-panel { width: 100%; }
-            .hero-premium { margin-top: 38px; }
         }
-		.card-body {
-    padding: 20px 20px 24px;
-}
-		
     </style>
 </head>
 <body>
 
-    <div class="urgency-bar">
-         คุ้ม...ครบ...จบ ที่กนกวรรณ ทับทอง
-    </div>
+    <div class="urgency-bar">คุ้ม...ครบ...จบ ที่กนกวรรณ ทับทอง</div>
 
     <div id="toast">เพิ่มลงตะกร้าแล้ว ✓</div>
     <div class="overlay" id="overlay" onclick="toggleCart()"></div>
@@ -220,35 +164,20 @@
     </nav>
 
     <section class="hero-slider">
-    <div class="slides">
-        <div class="slide active">
-            <img src="uniform.png">
+        <div class="slides">
+            <div class="slide active"><img src="uniform.png"></div>
+            <div class="slide"><img src="uniform2.png"></div>
+            <div class="slide"><img src="uniform3.png"></div>
+            <div class="slide"><img src="uniform4.png"></div>
+            <div class="slide"><img src="uniform5.png"></div>
         </div>
-
-        <div class="slide">
-            <img src="uniform2.png">
+        <div class="hero-overlay">
+            <div class="hero-content">
+                <h1>KANOKWAN TABTHONG</h1>
+                <p>ยกระดับงานยูนิฟอร์มสู่มาตรฐานมืออาชีพ พร้อมขับเคลื่อนธุรกิจอย่างรับผิดชอบต่อสังคม</p>
+            </div>
         </div>
-
-        <div class="slide">
-            <img src="uniform3.png">
-        </div>
-
-        <div class="slide">
-            <img src="uniform4.png">
-        </div>
-
-	<div class="slide">
-            <img src="uniform5.png">
-        </div>
-    </div>
-
-    <div class="hero-overlay">
-        <div class="hero-content">
-            <h1>KANOKWAN TABTHONG<br></h1>
-            <p>ห้างหุ้นส่วนจำกัด กนกวรรณ ทับทอง ยกระดับงานยูนิฟอร์มสู่มาตรฐานมืออาชีพ พร้อมขับเคลื่อนธุรกิจอย่างรับผิดชอบต่อสังคมและสิ่งแวดล้อม</p>
-        </div>
-    </div>
-</section>
+    </section>
 
     <div class="trust-bar">
         <span>🚚 ส่งทั่วประเทศ</span>
@@ -277,90 +206,13 @@
 
     <main class="container">
         <h2 style="margin-bottom:40px; font-size:28px;">สินค้าแนะนำ</h2>
-        <div class="product-grid">
-            <div class="product-card">
-                <div class="badge-hot">🔥 สินค้าขายดี</div>
-                <div class="img-wrapper">
-                    <img src="#">
-                </div>
-                <div class="card-body">
-                    <div style="font-size:12px; color:var(--danger); font-weight:700; margin-bottom:8px;">สั่งไปแล้ว 128 รายการในสัปดาห์นี้</div>
-                    <span style="font-size:11px; letter-spacing:2px; color:#999; text-transform:uppercase;">Education</span>
-                    <h3 style="margin:10px 0 20px; font-size:20px;">เสื้อเชิ้ตนักเรียนชาย </h3>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                        <div style="display:flex; align-items:center; background:#f4f4f4; border-radius:12px; padding:4px;">
-                            <button class="qty-btn" style="border:none; background:none; width:35px; height:35px;" onclick="updateQtyUI('qty-1', -1)">-</button>
-                            <input type="number" id="qty-1" value="1" min="1" style="width:40px; text-align:center; border:none; background:none; font-weight:700;">
-                            <button class="qty-btn" style="border:none; background:none; width:35px; height:35px;" onclick="updateQtyUI('qty-1', 1)">+</button>
-                        </div>
-                        <span style="font-weight:700; font-size:22px; color:var(--primary);">฿350</span>
-                    </div>
-                    <select id="size-1" style="width:100%; padding:12px; border-radius:10px; margin-bottom:15px; border:1px solid #eee; font-family: inherit;">
-                        <option>Size 36 (อก 36")</option>
-                        <option>Size 38 (อก 38")</option>
-                        <option>Size 40 (อก 40")</option>
-                    </select>
-                    <button class="add-to-bag-btn" onclick="addToCart('เสื้อนักเรียน ', 350, 'qty-1', 'size-1')">เพิ่มลงในตะกร้า</button>
-                    <button class="buy-now-btn" onclick="buyNow('เสื้อนักเรียน ', 350, 'qty-1', 'size-1')">ซื้อเลย⚡</button>
-                </div>
-            </div>
-
-            <div class="product-card">
-                <div class="img-wrapper">
-                    <img src="#">
-                </div>
-                <div class="card-body">
-                    <div style="font-size:12px; color:#666; font-weight:700; margin-bottom:8px;">สต็อกคงเหลือ: 12 ชุดสุดท้าย</div>
-                    <span style="font-size:11px; letter-spacing:2px; color:#999; text-transform:uppercase;">Professional</span>
-                    <h3 style="margin:10px 0 20px; font-size:20px;">ชุดกากีข้าราชการพรีเมียม</h3>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                        <div style="display:flex; align-items:center; background:#f4f4f4; border-radius:12px; padding:4px;">
-                            <button class="qty-btn" style="border:none; background:none; width:35px; height:35px;" onclick="updateQtyUI('qty-2', -1)">-</button>
-                            <input type="number" id="qty-2" value="1" min="1" style="width:40px; text-align:center; border:none; background:none; font-weight:700;">
-                            <button class="qty-btn" style="border:none; background:none; width:35px; height:35px;" onclick="updateQtyUI('qty-2', 1)">+</button>
-                        </div>
-                        <span style="font-weight:700; font-size:22px; color:var(--primary);">฿1,850</span>
-                    </div>
-                    <select id="size-2" style="width:100%; padding:12px; border-radius:10px; margin-bottom:15px; border:1px solid #eee; font-family: inherit;">
-                        <option>Size S</option><option>Size M</option><option>Size L</option>
-                    </select>
-                    <button class="add-to-bag-btn" onclick="addToCart('ชุดกากีข้าราชการ', 1850, 'qty-2', 'size-2')">เพิ่มลงในตะกร้า</button>
-                    <button class="buy-now-btn" onclick="buyNow('ชุดกากีข้าราชการ', 1850, 'qty-2', 'size-2')">ซื้อเลย⚡</button>
-                </div>
-            </div>
-            <div class="product-grid">
-            <div class="product-card">
-                <div class="badge-hot">🔥 สินค้าขายดี</div>
-                <div class="img-wrapper">
-                    <img src="#">
-                </div>
-                <div class="card-body">
-                    <div style="font-size:12px; color:var(--danger); font-weight:700; margin-bottom:8px;">สั่งไปแล้ว 99 รายการในสัปดาห์นี้</div>
-                    <span style="font-size:11px; letter-spacing:2px; color:#999; text-transform:uppercase;">Education</span>
-                    <h3 style="margin:10px 0 20px; font-size:20px;">ชุดลูกเสือ</h3>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                        <div style="display:flex; align-items:center; background:#f4f4f4; border-radius:12px; padding:4px;">
-                            <button class="qty-btn" style="border:none; background:none; width:35px; height:35px;" onclick="updateQtyUI('qty-1', -1)">-</button>
-                            <input type="number" id="qty-1" value="1" min="1" style="width:40px; text-align:center; border:none; background:none; font-weight:700;">
-                            <button class="qty-btn" style="border:none; background:none; width:35px; height:35px;" onclick="updateQtyUI('qty-1', 1)">+</button>
-                        </div>
-                        <span style="font-weight:700; font-size:22px; color:var(--primary);">฿350</span>
-                    </div>
-                    <select id="size-1" style="width:100%; padding:12px; border-radius:10px; margin-bottom:15px; border:1px solid #eee; font-family: inherit;">
-                        <option>Size 36 (อก 36")</option>
-                        <option>Size 38 (อก 38")</option>
-                        <option>Size 40 (อก 40")</option>
-                    </select>
-                    <button class="add-to-bag-btn" onclick="addToCart('เสื้อนักเรียน Gold Edition', 350, 'qty-1', 'size-1')">เพิ่มลงในตะกร้า</button>
-                    <button class="buy-now-btn" onclick="buyNow('เสื้อนักเรียน Gold Edition', 350, 'qty-1', 'size-1')">ซื้อเลย⚡</button>
-                </div>
-            </div>
+        <div class="product-grid" id="productGrid">
+            <p style="text-align: center; color: #999;">กำลังโหลดสินค้า...</p>
         </div>
     </main>
 
     <section class="review-section">
         <h2 style="font-size:32px; margin-bottom:10px; color:var(--primary);">เสียงจากลูกค้าจริง</h2>
-        <p style="color:#888;">ความประทับใจจากผู้ใช้งานทั่วประเทศ</p>
         <div class="review-grid">
             <div class="review-card">
                 <div style="color:var(--accent); margin-bottom:10px;">⭐⭐⭐⭐⭐</div>
@@ -372,17 +224,12 @@
                 <p>“สั่งง่าย ตอบไว งานตัดเย็บเนี๊ยบเหมือนแบรนด์นอก ทรงสวยใส่สบายมาก”</p>
                 <strong>- ครูสมชาย</strong>
             </div>
-            <div class="review-card">
-                <div style="color:var(--accent); margin-bottom:10px;">⭐⭐⭐⭐⭐</div>
-                <p>“มีใบเสร็จรับเงินครบถ้วน นำไปเบิกพัสดุได้ไม่มีปัญหา แนะนำเลยค่ะ”</p>
-                <strong>- ฝ่ายการเงินองค์กร</strong>
-            </div>
         </div>
     </section>
 
     <div class="cart-panel" id="cartPanel">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h2 style="margin:0; font-size:24px;">🛒 รายการสินค้าของคุณ</h2>
+            <h2 style="margin:0; font-size:24px;">🛒 รายการสินค้า</h2>
             <span onclick="toggleCart()" style="cursor:pointer; font-size:30px;">&times;</span>
         </div>
         <div id="cartItems" class="cart-items"></div>
@@ -408,8 +255,61 @@
 
     <script>
         let cart = JSON.parse(localStorage.getItem('kanokwan_cart')) || [];
-        window.onload = () => renderCart();
+        
+        // --- 🚀 เรียกใช้ทั้งตะกร้าและสินค้าตอนโหลดหน้า ---
+        window.onload = () => {
+            renderCart();
+            loadProducts(); 
+        };
 
+        // --- 📦 ดึงสินค้าจาก LocalStorage มาแสดง ---
+        function loadProducts() {
+            const container = document.getElementById('productGrid');
+            let products = JSON.parse(localStorage.getItem('products')) || [];
+
+            if (products.length === 0) {
+                container.innerHTML = "<p style='grid-column: 1/-1; text-align: center; padding: 50px; color: #999;'>ยังไม่มีสินค้าในขณะนี้</p>";
+                return;
+            }
+
+            container.innerHTML = ""; // ล้างข้อมูลเดิม
+
+            // วนลูปสร้างการ์ดสินค้า (แสดงจากใหม่ไปเก่าด้วย .reverse)
+            products.reverse().forEach((p, i) => {
+                const sizes = Array.isArray(p.sizes) ? p.sizes : [];
+                
+                container.innerHTML += `
+                <div class="product-card">
+                    <div class="badge-hot">แนะนำ</div>
+                    <div class="img-wrapper">
+                        <img src="${p.img || 'https://via.placeholder.com/400x500'}" alt="${p.name}">
+                    </div>
+                    <div class="card-body">
+                        <span style="font-size:11px; letter-spacing:2px; color:#999; text-transform:uppercase;">${p.category || 'Uniform'}</span>
+                        <h3 style="margin:10px 0 20px; font-size:20px;">${p.name}</h3>
+                        
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                            <div style="display:flex; align-items:center; background:#f4f4f4; border-radius:12px; padding:4px;">
+                                <button onclick="updateQtyUI('qty-${i}', -1)" style="width:35px; height:35px; background:none; border:none; font-weight:bold;">-</button>
+                                <input type="number" id="qty-${i}" value="1" min="1" style="width:40px; text-align:center; border:none; background:none; font-weight:700;">
+                                <button onclick="updateQtyUI('qty-${i}', 1)" style="width:35px; height:35px; background:none; border:none; font-weight:bold;">+</button>
+                            </div>
+                            <span style="font-weight:700; font-size:22px; color:var(--primary);">฿${Number(p.price).toLocaleString()}</span>
+                        </div>
+
+                        <select id="size-${i}" style="width:100%; padding:12px; border-radius:10px; margin-bottom:15px; border:1px solid #eee; font-family: inherit;">
+                            ${sizes.map(s => `<option value="${s}">${s}</option>`).join('')}
+                        </select>
+
+                        <button class="add-to-bag-btn" onclick="addToCart('${p.name}', ${p.price}, 'qty-${i}', 'size-${i}')">เพิ่มลงในตะกร้า</button>
+                        <button class="buy-now-btn" onclick="buyNow('${p.name}', ${p.price}, 'qty-${i}', 'size-${i}')">ซื้อเลย⚡</button>
+                    </div>
+                </div>
+                `;
+            });
+        }
+
+        // --- 🛒 ระบบจัดการตะกร้าสินค้า (เหมือนเดิม) ---
         function saveCart() {
             localStorage.setItem('kanokwan_cart', JSON.stringify(cart));
             renderCart();
@@ -417,6 +317,7 @@
 
         function updateQtyUI(id, change) {
             const input = document.getElementById(id);
+            if(!input) return;
             let val = parseInt(input.value) + change;
             if (val < 1) val = 1;
             input.value = val;
@@ -459,7 +360,7 @@
         function renderCart() {
             const container = document.getElementById('cartItems');
             let total = 0;
-            container.innerHTML = cart.length === 0 ? '<p style="text-align:center; color:#888; margin-top:40px;">รถเข็นของคุณว่างเปล่า</p>' : '';
+            container.innerHTML = cart.length === 0 ? '<p style="text-align:center; color:#888; margin-top:40px;">รถเข็นว่างเปล่า</p>' : '';
 
             cart.forEach((item, index) => {
                 total += (item.price * item.qty);
@@ -471,7 +372,7 @@
                         </div>
                         <div style="text-align:right;">
                             <div style="font-weight:700;">฿${(item.price * item.qty).toLocaleString()}</div>
-                            <div style="color:red; font-size:12px; cursor:pointer;" onclick="removeItem(${index})">นำสินค้าออก</div>
+                            <div style="color:red; font-size:12px; cursor:pointer;" onclick="removeItem(${index})">ลบออก</div>
                         </div>
                     </div>`;
             });
@@ -492,18 +393,13 @@
             document.getElementById('confirmBtn').style.display = 'block';
         }
 
-        function generateOrderId() {
-            return "KNW-" + Math.floor(10000 + Math.random() * 90000);
-        }
-
         function sendToLine() {
             const name = document.getElementById('custName').value;
             const phone = document.getElementById('custPhone').value;
             const addr = document.getElementById('custAddr').value;
             if(!name || !phone || !addr) return alert('กรุณากรอกข้อมูลให้ครบถ้วน');
 
-            const orderId = generateOrderId();
-            let msg = `🧾 *ORDER ID: ${orderId}*%0A🌟 *KANOKWAN OFFICIAL*%0A--------------------------%0A`;
+            let msg = `🧾 *ORDER ID: KNW-${Math.floor(10000 + Math.random() * 90000)}*%0A🌟 *KANOKWAN OFFICIAL*%0A--------------------------%0A`;
             cart.forEach((item, i) => msg += `${i+1}. ${item.name} (x${item.qty})%0A   Size: ${item.size}%0A`);
             msg += `--------------------------%0A💰 ยอดรวม: ${document.getElementById('cartTotal').innerText} บาท%0A👤 ผู้รับ: ${name}%0A📞 โทร: ${phone}%0A📍 ที่อยู่: ${addr}`;
             
@@ -511,21 +407,15 @@
             cart = [];
             saveCart();
         }
+
+        // --- 🎞️ Slider Logic (เหมือนเดิม) ---
         let currentSlide = 0;
-const slides = document.querySelectorAll(".slide");
-
-function autoSlide() {
-    slides[currentSlide].classList.remove("active");
-
-    currentSlide++;
-    if (currentSlide >= slides.length) {
-        currentSlide = 0;
-    }
-
-    slides[currentSlide].classList.add("active");
-}
-
-setInterval(autoSlide, 3500);
+        const slides = document.querySelectorAll(".slide");
+        setInterval(() => {
+            slides[currentSlide].classList.remove("active");
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add("active");
+        }, 3500);
     </script>
 </body>
 </html>
