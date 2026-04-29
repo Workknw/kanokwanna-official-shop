@@ -22,12 +22,22 @@
             margin: 0; font-family: 'Plus Jakarta Sans', 'Prompt', sans-serif;
             background: var(--light); color: var(--dark); overflow-x: hidden;
         }
+        body.cart-open { overflow: hidden; }
 
-        /* --- Global Components --- */
+        /* --- Skeleton Loading --- */
+        .skeleton-card {
+            background: #eee; border-radius: 24px; height: 500px;
+            animation: skeleton-loading 1s linear infinite alternate;
+        }
+        @keyframes skeleton-loading {
+            0% { background-color: #f0f0f0; }
+            100% { background-color: #e0e0e0; }
+        }
+
         .urgency-bar { 
             background: var(--dark); color: white; padding: 10px; 
             text-align: center; font-size: 13px; font-weight: 600; 
-            letter-spacing: 1px; position: relative; z-index: 1100;
+            letter-spacing: 1px; position: fixed; top:0; width: 100%; z-index: 1100;
         }
         
         .glass-nav {
@@ -48,8 +58,7 @@
         }
         .search-input:focus { width: 280px; background: white; border-color: var(--accent); }
 
-        /* --- Hero --- */
-        .hero-slider { height: 70vh; position: relative; overflow: hidden; margin-top: 38px; }
+        .hero-slider { height: 70vh; position: relative; overflow: hidden; margin-top: 80px; }
         .slides { width: 100%; height: 100%; position: relative; }
         .slide { position: absolute; width: 100%; height: 100%; opacity: 0; transition: opacity 1s ease-in-out; }
         .slide.active { opacity: 1; z-index: 1; }
@@ -61,27 +70,19 @@
         .hero-content h1 { font-size: clamp(2.5rem, 8vw, 4.5rem); margin: 0; font-weight: 700; line-height: 1.1; }
         .hero-content p { margin-top: 20px; font-size: 1.1rem; opacity: 0.9; }
 
-        /* --- Trust Bar --- */
         .trust-bar {
             display: flex; flex-wrap: wrap; justify-content: center; gap: 40px;
             padding: 20px; background: white; border-bottom: 1px solid #eee;
             font-size: 13px; font-weight: 600; color: #555;
         }
 
-        /* --- Services --- */
-        .services-section { background: white; padding: 80px 40px; text-align: center; }
-        .services-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px; max-width: 1200px; margin: 40px auto 0;
-        }
-        .service-item {
-            padding: 40px 30px; border-radius: 24px; background: var(--light);
-            border: 1px solid rgba(0,0,0,0.03); transition: all 0.4s ease;
-        }
-        .service-item:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.05); background: white; border-color: var(--accent); }
+        .container { max-width: 1400px; margin: 40px auto; padding: 0 40px; }
+        
+        /* New Filter Style */
+        .filter-container { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; }
+        .filter-btn { padding: 8px 20px; border-radius: 50px; background: #eee; cursor: pointer; font-weight: 600; font-size: 14px; }
+        .filter-btn.active { background: var(--primary); color: white; }
 
-        /* --- Product Card & Grid --- */
-        .container { max-width: 1400px; margin: 60px auto; padding: 0 40px; }
         .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 40px; }
         .product-card {
             background: white; border-radius: 24px; overflow: hidden;
@@ -94,23 +95,17 @@
         .badge-sale { background: #ffc107; color: #000; padding: 5px 15px; border-radius: 50px; font-size: 11px; font-weight: 700; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 
         .img-wrapper { width: 100%; height: 380px; background: #eee; overflow: hidden; }
-        .img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: 0.8s; }
+        .img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: 0.8s; opacity: 0; }
+        .img-wrapper img.loaded { opacity: 1; }
         .product-card:hover .img-wrapper img { transform: scale(1.08); }
         .card-body { padding: 20px 20px 24px; }
 
-        /* --- Buttons --- */
         button { cursor: pointer; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); border: none; font-family: inherit; }
         button:active { transform: scale(0.96); }
-        .buy-now-btn {
-            width: 100%; margin-top: 10px; padding: 16px; background: var(--accent); color: var(--dark);
-            border-radius: 14px; font-weight: 800;
-        }
-        .add-to-bag-btn {
-            width: 100%; padding: 16px; background: var(--dark); color: white;
-            border-radius: 14px; font-weight: 700;
-        }
+        .buy-now-btn { width: 100%; margin-top: 10px; padding: 16px; background: var(--accent); color: var(--dark); border-radius: 14px; font-weight: 800; }
+        .add-to-bag-btn { width: 100%; padding: 16px; background: var(--dark); color: white; border-radius: 14px; font-weight: 700; }
+        .add-to-bag-btn:hover { background: #333; box-shadow: 0 8px 15px rgba(0,0,0,0.2); }
 
-        /* --- Components --- */
         #toast {
             position: fixed; top: 100px; right: 20px; background: var(--primary);
             color: white; padding: 12px 28px; border-radius: 50px;
@@ -118,13 +113,14 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.1); font-weight: 600;
         }
         #toast.show { transform: translateX(0); }
+
         .overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
-            display: none; z-index: 1500; opacity: 0; transition: 0.4s;
+            opacity: 0; pointer-events: none; transition: 0.4s; z-index: 1500;
         }
+        .overlay.show { opacity: 1; pointer-events: auto; }
 
-        /* --- Side Cart --- */
         .cart-panel {
             position: fixed; right: -500px; top: 0; width: 450px; height: 100%;
             background: white; z-index: 2000; transition: var(--transition);
@@ -133,30 +129,29 @@
         .cart-panel.active { right: 0; }
         .cart-items { flex-grow: 1; overflow-y: auto; margin: 20px 0; }
 
+        .line-float {
+            position: fixed; bottom: 30px; right: 30px; background: #06C755;
+            width: 60px; height: 60px; border-radius: 50%; display: flex;
+            justify-content: center; align-items: center; box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            z-index: 900; color: white; text-decoration: none; font-size: 24px;
+            transition: 0.3s;
+        }
+        .line-float:hover { transform: scale(1.1); }
+
         footer { background: var(--dark); color: white; padding: 60px 40px; text-align: center; }
+        .nav-btn { padding: 10px 20px; border-radius: 50px; background: rgba(0,0,0,0.05); color: var(--primary); font-weight: 600; transition: 0.3s; text-decoration: none;}
+        .nav-btn:hover { background: var(--primary); color: white; transform: translateY(-2px); }
 
         @media (max-width: 768px) {
             .nav-content { padding: 0 20px; }
             .search-input { display: none; }
             .cart-panel { width: 100%; }
         }
-        .nav-btn {
-            padding: 10px 20px;
-            border-radius: 50px;
-            background: rgba(0,0,0,0.05);
-            color: var(--primary);
-            font-weight: 600;
-            transition: 0.3s;
-        }
-
-        .nav-btn:hover {
-            background: var(--primary);
-            color: white;
-            transform: translateY(-2px);
-        }
     </style>
 </head>
 <body>
+
+    <div class="urgency-bar">🎉 FREE SHIPPING OVER ฿2,000 | FLASH SALE จบใน <span id="timer">00:00:00</span></div>
 
     <div id="toast">เพิ่มลงตะกร้าแล้ว ✓</div>
     <div class="overlay" id="overlay" onclick="toggleCart()"></div>
@@ -166,9 +161,9 @@
             <a href="#" class="brand-logo">KANOKWAN SHOP</a>
             <div class="nav-right">
                 <a href="https://workknw.github.io/kanokwanna-official-website/" class="nav-btn">หน้าแรก</a>
-                <input type="text" placeholder="ค้นหาสินค้า..." class="search-input">
+                <input type="text" id="searchInput" placeholder="ค้นหาสินค้า..." class="search-input">
                 <div onclick="toggleCart()" style="cursor:pointer; background:var(--dark); color:white; padding:10px 22px; border-radius:50px; font-size:14px; font-weight:600;">
-                    🛒 รายการสินค้า (<span id="cart-count">0</span>)
+                    🛒 ตะกร้า (<span id="cart-count">0</span>)
                 </div>
             </div>
         </div>
@@ -176,11 +171,11 @@
 
     <section class="hero-slider">
         <div class="slides">
-            <div class="slide active"><img src="uniform.png"></div>
-            <div class="slide"><img src="uniform2.png"></div>
-            <div class="slide"><img src="uniform3.png"></div>
-            <div class="slide"><img src="uniform4.png"></div>
-            <div class="slide"><img src="uniform5.png"></div>
+            <div class="slide active"><img src="uniform.png" loading="eager"></div>
+            <div class="slide"><img src="uniform2.png" loading="lazy"></div>
+            <div class="slide"><img src="uniform3.png" loading="lazy"></div>
+            <div class="slide"><img src="uniform4.png" loading="lazy"></div>
+            <div class="slide"><img src="uniform5.png" loading="lazy"></div>
         </div>
         <div class="hero-overlay">
             <div class="hero-content">
@@ -198,11 +193,21 @@
     </div>
 
     <main class="container">
+        <div class="filter-container">
+            <div class="filter-btn active" onclick="filterItems('all', this)">ทั้งหมด</div>
+            <div class="filter-btn" onclick="filterItems('Shirt', this)">เสื้อยูนิฟอร์ม</div>
+            <div class="filter-btn" onclick="filterItems('Pants', this)">กางเกง</div>
+        </div>
+
         <h2 style="margin-bottom:40px; font-size:28px;">สินค้าแนะนำ</h2>
         <div class="product-grid" id="productGrid">
-            <p style="text-align: center; color: #999;">กำลังโหลดสินค้า...</p>
+            <div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
         </div>
     </main>
+
+    <a href="https://line.me/R/ti/p/@knwtt" class="line-float" target="_blank">💬</a>
 
     <div class="cart-panel" id="cartPanel">
         <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -231,40 +236,38 @@
     </footer>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // ⚠️ อย่าลืมใส่ Config ของคุณตรงนี้นะครับ
         const firebaseConfig = {
-            apiKey: "YOUR_KEY",
-            authDomain: "...",
-            projectId: "...",
-            // รูปแบบมาตรฐานจะมี storageBucket, messagingSenderId, appId ด้วย
+            apiKey: "AIzaSyDToPawKXOwr1zIoYuU-h8OvBrwwoM_pXE",
+            authDomain: "kanokwan-shop-edcf3.firebaseapp.com",
+            projectId: "kanokwan-shop-edcf3",
+            storageBucket: "kanokwan-shop-edcf3.firebasestorage.app",
+            messagingSenderId: "565108045695",
+            appId: "1:565108045695:web:7a16c9ee14f01d48f7cc4a"
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // นำฟังก์ชันเชื่อมต่อกับ window เพื่อให้สคริปต์หลัก (ด้านล่าง) เรียกใช้งานได้
+        window.db = db;
+        window.getDocs = getDocs;
+        window.collection = collection;
+
         window.loadProducts = async function() {
             const container = document.getElementById('productGrid');
-            container.innerHTML = "<p style='grid-column: 1/-1; text-align: center; padding: 50px; color: #999;'>กำลังโหลดสินค้าจากฐานข้อมูล...</p>";
-
             try {
                 const querySnapshot = await getDocs(collection(db, "products"));
                 let products = [];
-                
                 querySnapshot.forEach((doc) => {
                     products.push({ id: doc.id, ...doc.data() });
                 });
-
-                // เรียกใช้ฟังก์ชันแสดงผล (โค้ดเดิมของคุณ)
-                if (window.renderProductsUI) {
-                    window.renderProductsUI(products);
-                }
-            } catch (error) {
-                console.error("Firebase Error:", error);
-                container.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: red; padding: 50px;'>โหลดสินค้าไม่สำเร็จ กรุณาตรวจสอบ Firebase Config หรือสิทธิ์ Firestore Rules</p>";
+                window.rawProducts = products;
+                window.renderProductsUI(products);
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = `<p style="text-align:center;">ไม่สามารถโหลดข้อมูลได้</p>`;
             }
         };
     </script>
@@ -272,113 +275,135 @@
     <script>
         let cart = JSON.parse(localStorage.getItem('kanokwan_cart')) || [];
         
-        window.onload = () => {
+        document.addEventListener('DOMContentLoaded', () => {
             renderCart();
-            // ลองเรียกฟังก์ชันโหลดจาก Firebase ทันทีที่โหลดหน้าเสร็จ
-            if (window.loadProducts) {
-                window.loadProducts(); 
-            } else {
-                // เผื่อ Module Firebase ด้านบนโหลดช้ากว่า
-                setTimeout(() => {
-                    if (window.loadProducts) window.loadProducts();
-                }, 800);
+            startTimer(3600); // 1 hour timer
+            const checkLoad = setInterval(() => {
+                if (window.loadProducts) {
+                    window.loadProducts();
+                    clearInterval(checkLoad);
+                }
+            }, 100);
+            
+            let currentSlide = 0;
+            const slides = document.querySelectorAll(".slide");
+            if (slides.length > 0) {
+                setInterval(() => {
+                    slides[currentSlide].classList.remove("active");
+                    currentSlide = (currentSlide + 1) % slides.length;
+                    slides[currentSlide].classList.add("active");
+                }, 4000);
             }
-        };
+        });
 
-        // เปลี่ยนโครงสร้างการแสดงผลรับค่า products มาจาก Firebase แทน
+        // Flash Sale Timer
+        function startTimer(duration) {
+            let timer = duration, hours, minutes, seconds;
+            setInterval(() => {
+                hours = parseInt(timer / 3600, 10);
+                minutes = parseInt((timer % 3600) / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+                document.getElementById('timer').textContent = 
+                    (hours < 10 ? "0" + hours : hours) + ":" + 
+                    (minutes < 10 ? "0" + minutes : minutes) + ":" + 
+                    (seconds < 10 ? "0" + seconds : seconds);
+                if (--timer < 0) timer = duration;
+            }, 1000);
+        }
+
+        // Filtering Logic
+        window.filterItems = function(cat, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            if(cat === 'all') renderProductsUI(window.rawProducts);
+            else {
+                const filtered = window.rawProducts.filter(p => p.category === cat);
+                renderProductsUI(filtered);
+            }
+        }
+
         window.renderProductsUI = function(products) {
             const container = document.getElementById('productGrid');
-            
-            products = products.filter(p => p.status !== 'inactive');
-
-            if (products.length === 0) {
-                container.innerHTML = "<p style='grid-column: 1/-1; text-align: center; padding: 50px; color: #999;'>ยังไม่มีสินค้าในขณะนี้</p>";
+            const activeProducts = products.filter(p => p.status !== 'inactive');
+            if (activeProducts.length === 0) {
+                container.innerHTML = "<p style='grid-column: 1/-1; text-align: center; padding: 50px;'>ไม่พบสินค้า</p>";
                 return;
             }
 
             container.innerHTML = ""; 
-
-            products.reverse().forEach((p, i) => {
+            [...activeProducts].reverse().forEach((p, i) => {
                 const sizes = Array.isArray(p.sizes) ? p.sizes : [];
+                const productId = p.id || `prod-${i}`;
                 
-                container.innerHTML += `
+                const cardHtml = `
                 <div class="product-card">
                     <div class="badge-container">
                         ${p.isBestSeller ? '<div class="badge-hot">🔥 ขายดี</div>' : ''}
                         ${p.isSale ? '<div class="badge-sale">SALE</div>' : ''}
                     </div>
                     <div class="img-wrapper">
-                        <img src="${p.img || 'https://via.placeholder.com/400x500'}" alt="${p.name}">
+                        <img src="${p.img || 'https://via.placeholder.com/400x500'}" alt="${p.name}" loading="lazy" onload="this.classList.add('loaded')">
                     </div>
                     <div class="card-body">
-                        <span style="font-size:11px; letter-spacing:2px; color:#999; text-transform:uppercase;">${p.category || 'Uniform'}</span>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-size:11px; letter-spacing:2px; color:#999; text-transform:uppercase;">${p.category || 'Uniform'}</span>
+                            <span style="color:#ffaa00; font-size:12px;">⭐⭐⭐⭐⭐ (20+)</span>
+                        </div>
                         <h3 style="margin:5px 0 5px; font-size:19px;">${p.name}</h3>
-                        <div style="font-size:12px; color:#888; margin-bottom:15px;">ขายแล้ว ${p.sold || 0} ชิ้น</div>
+                        <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:15px;">
+                            <span style="color:#888;">ขายแล้ว ${p.sold || 0} ชิ้น</span>
+                            <span style="color:red; font-weight:600;">🔥 เหลือ ${Math.floor(Math.random() * 5) + 2} ชิ้นสุดท้าย</span>
+                        </div>
                         
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
                             <div style="display:flex; align-items:center; background:#f4f4f4; border-radius:12px; padding:4px;">
-                                <button onclick="updateQtyUI('qty-${i}', -1)" style="width:35px; height:35px; background:none; border:none; font-weight:bold;">-</button>
-                                <input type="number" id="qty-${i}" value="1" min="1" style="width:40px; text-align:center; border:none; background:none; font-weight:700;">
-                                <button onclick="updateQtyUI('qty-${i}', 1)" style="width:35px; height:35px; background:none; border:none; font-weight:bold;">+</button>
+                                <button onclick="updateQtyUI('qty-${productId}', -1)" style="width:35px; height:35px; background:none; border:none; font-weight:bold;">-</button>
+                                <input type="number" id="qty-${productId}" value="1" min="1" style="width:40px; text-align:center; border:none; background:none; font-weight:700;">
+                                <button onclick="updateQtyUI('qty-${productId}', 1)" style="width:35px; height:35px; background:none; border:none; font-weight:bold;">+</button>
                             </div>
-                            
-                            <div style="text-align:right;" id="price-${i}">
+                            <div style="text-align:right;" id="price-${productId}">
                                 <div style="font-weight:700; font-size:22px; color:var(--primary);">฿${Number(p.price).toLocaleString()}</div>
                             </div>
                         </div>
 
-                        <select id="size-${i}" 
-                            onchange="updatePriceUI(this, 'price-${i}', ${p.price}, ${p.salePrice || 0}, ${p.isSale})"
-                            style="width:100%; padding:12px; border-radius:10px; margin-bottom:15px; border:1px solid #eee; font-family: inherit;">
+                        <select id="size-${productId}" onchange="updatePriceUI(this, 'price-${productId}', ${p.price}, ${p.salePrice || 0}, ${p.isSale})" style="width:100%; padding:12px; border-radius:10px; margin-bottom:15px; border:1px solid #eee; font-family: inherit;">
                             ${sizes.length > 0 ? 
                                 sizes.map(s => `<option value="${s.size}" data-price="${s.price}">${s.size} - ฿${s.price.toLocaleString()}</option>`).join('') :
                                 `<option value="Free Size" data-price="${p.isSale ? p.salePrice : p.price}">Free Size</option>`
                             }
                         </select>
 
-                        <button class="add-to-bag-btn" onclick="addToCart('${p.name}', 'qty-${i}', 'size-${i}')">เพิ่มลงในตะกร้า</button>
-                        <button class="buy-now-btn" onclick="buyNow('${p.name}', 'qty-${i}', 'size-${i}')">ซื้อเลย⚡</button>
+                        <button class="add-to-bag-btn" onclick="addToCart('${productId}', '${p.name}', 'qty-${productId}', 'size-${productId}')">เพิ่มลงในตะกร้า</button>
+                        <button class="buy-now-btn" onclick="buyNow('${productId}', '${p.name}', 'qty-${productId}', 'size-${productId}')">ซื้อเลย⚡</button>
                     </div>
-                </div>
-                `;
-
-                setTimeout(() => {
-                    const select = document.getElementById(`size-${i}`);
-                    if(select) {
-                        updatePriceUI(select, `price-${i}`, p.price, p.salePrice || 0, p.isSale);
-                    }
-                }, 0);
+                </div>`;
+                container.insertAdjacentHTML('beforeend', cardHtml);
+                const select = document.getElementById(`size-${productId}`);
+                if(select) updatePriceUI(select, `price-${productId}`, p.price, p.salePrice || 0, p.isSale);
             });
         }
 
+        // Logic functions (Same as original but kept for completeness)
         function updatePriceUI(selectEl, priceContainerId, basePrice, salePrice, isSale) {
             const selectedOption = selectEl.options[selectEl.selectedIndex];
             const newPrice = Number(selectedOption.dataset.price) || basePrice;
             const container = document.getElementById(priceContainerId);
-
             if (isSale && salePrice > 0) {
-                container.innerHTML = `
-                    <div style="text-decoration:line-through; color:#999; font-size:13px;">฿${basePrice.toLocaleString()}</div>
-                    <div style="font-weight:700; font-size:22px; color:red;">฿${newPrice.toLocaleString()}</div>
-                `;
+                container.innerHTML = `<div style="text-decoration:line-through; color:#999; font-size:13px;">฿${basePrice.toLocaleString()}</div><div style="font-weight:700; font-size:22px; color:red;">฿${newPrice.toLocaleString()}</div>`;
             } else {
-                container.innerHTML = `
-                    <div style="font-weight:700; font-size:22px; color:var(--primary);">฿${newPrice.toLocaleString()}</div>
-                `;
+                container.innerHTML = `<div style="font-weight:700; font-size:22px; color:var(--primary);">฿${newPrice.toLocaleString()}</div>`;
             }
         }
 
-        function addToCart(name, qtyId, sizeId) {
-            const qtyInput = document.getElementById(qtyId);
+        function addToCart(id, name, qtyId, sizeId) {
+            const qty = parseInt(document.getElementById(qtyId).value) || 1;
             const sizeSelect = document.getElementById(sizeId);
-            const qty = parseInt(qtyInput.value);
             const size = sizeSelect.value;
-            const selectedOption = sizeSelect.options[sizeSelect.selectedIndex];
-            const price = Number(selectedOption.dataset.price); 
+            const price = Number(sizeSelect.options[sizeSelect.selectedIndex].dataset.price); 
 
-            const existing = cart.find(item => item.name === name && item.size === size);
+            const existing = cart.find(item => item.id === id && item.size === size);
             if(existing) existing.qty += qty;
-            else cart.push({ name, price, qty, size });
+            else cart.push({ id, name, price, qty, size });
 
             const toast = document.getElementById('toast');
             toast.classList.add('show');
@@ -401,50 +426,13 @@
         function toggleCart() {
             const panel = document.getElementById('cartPanel');
             const overlay = document.getElementById('overlay');
-            panel.classList.toggle('active');
-            overlay.style.display = panel.classList.contains('active') ? 'block' : 'none';
-            setTimeout(() => overlay.style.opacity = panel.classList.contains('active') ? '1' : '0', 10);
-            
-            if(!panel.classList.contains('active')) {
+            const isOpen = panel.classList.toggle('active');
+            overlay.classList.toggle('show', isOpen);
+            if(!isOpen) {
                 document.getElementById('checkoutSection').style.display = 'none';
                 document.getElementById('mainActionBtn').style.display = 'block';
                 document.getElementById('confirmBtn').style.display = 'none';
             }
-        }
-
-        function buyNow(name, qtyId, sizeId) {
-            addToCart(name, qtyId, sizeId);
-            toggleCart();
-            showCheckout();
-        }
-
-        function renderCart() {
-            const container = document.getElementById('cartItems');
-            let total = 0;
-            container.innerHTML = cart.length === 0 ? '<p style="text-align:center; color:#888; margin-top:40px;">รถเข็นว่างเปล่า</p>' : '';
-
-            cart.forEach((item, index) => {
-                total += (item.price * item.qty);
-                container.innerHTML += `
-                    <div style="display:flex; justify-content:space-between; margin-bottom:20px; padding-bottom:20px; border-bottom:1px solid #f9f9f9;">
-                        <div>
-                            <div style="font-weight:700;">${item.name}</div>
-                            <div style="font-size:13px; color:#888;">ไซส์: ${item.size} | จำนวน: ${item.qty}</div>
-                        </div>
-                        <div style="text-align:right;">
-                            <div style="font-weight:700;">฿${(item.price * item.qty).toLocaleString()}</div>
-                            <div style="color:red; font-size:12px; cursor:pointer;" onclick="removeItem(${index})">ลบออก</div>
-                        </div>
-                    </div>`;
-            });
-
-            document.getElementById('cartTotal').innerText = total.toLocaleString();
-            document.getElementById('cart-count').innerText = cart.reduce((sum, item) => sum + item.qty, 0);
-        }
-
-        function removeItem(index) {
-            cart.splice(index, 1);
-            saveCart();
         }
 
         function showCheckout() {
@@ -454,31 +442,45 @@
             document.getElementById('confirmBtn').style.display = 'block';
         }
 
-        function sendToLine() {
+        function renderCart() {
+            const container = document.getElementById('cartItems');
+            let total = 0;
+            container.innerHTML = cart.length === 0 ? '<p style="text-align:center; color:#888;">รถเข็นว่างเปล่า</p>' : '';
+            cart.forEach((item, index) => {
+                total += (item.price * item.qty);
+                container.innerHTML += `
+                    <div style="display:flex; justify-content:space-between; margin-bottom:20px; padding-bottom:10px; border-bottom:1px solid #eee;">
+                        <div><div style="font-weight:700;">${item.name}</div><div style="font-size:12px;">ไซส์: ${item.size} x ${item.qty}</div></div>
+                        <div style="text-align:right;"><div style="font-weight:700;">฿${(item.price * item.qty).toLocaleString()}</div><div style="color:red; font-size:11px; cursor:pointer;" onclick="removeItem(${index})">ลบ</div></div>
+                    </div>`;
+            });
+            document.getElementById('cartTotal').innerText = total.toLocaleString();
+            document.getElementById('cart-count').innerText = cart.reduce((sum, item) => sum + item.qty, 0);
+        }
+
+        window.removeItem = function(index) {
+            cart.splice(index, 1);
+            saveCart();
+        }
+
+        window.buyNow = function(id, name, qtyId, sizeId) {
+            addToCart(id, name, qtyId, sizeId);
+            toggleCart();
+            showCheckout();
+        }
+
+        window.sendToLine = function() {
             const name = document.getElementById('custName').value;
             const phone = document.getElementById('custPhone').value;
             const addr = document.getElementById('custAddr').value;
             if(!name || !phone || !addr) return alert('กรุณากรอกข้อมูลให้ครบถ้วน');
 
-            let msg = `🧾 *ORDER ID: KNW-${Math.floor(10000 + Math.random() * 90000)}*%0A🌟 *KANOKWAN OFFICIAL*%0A--------------------------%0A`;
-            cart.forEach((item, i) => msg += `${i+1}. ${item.name} (x${item.qty})%0A   ไซส์: ${item.size}%0A`);
-            msg += `--------------------------%0A💰 ยอดรวม: ${document.getElementById('cartTotal').innerText} บาท%0A👤 ผู้รับ: ${name}%0A📞 โทร: ${phone}%0A📍 ที่อยู่: ${addr}`;
-            
-            window.location.href = `https://line.me/R/ti/p/@knwtt?text=${msg}`;
-            cart = [];
-            saveCart();
+            let msg = `🧾 *ORDER ID: KNW-${Math.floor(10000 + Math.random() * 90000)}*\n🌟 *KANOKWAN OFFICIAL*\n--------------------------\n`;
+            cart.forEach((item, i) => msg += `${i+1}. ${item.name} (x${item.qty}) ไซส์: ${item.size}\n`);
+            msg += `--------------------------\n💰 ยอดรวม: ${document.getElementById('cartTotal').innerText} บาท\n👤 ผู้รับ: ${name}\n📞 โทร: ${phone}\n📍 ที่อยู่: ${addr}`;
+            window.location.href = `https://line.me/R/ti/p/@knwtt?text=${encodeURIComponent(msg)}`;
+            cart = []; saveCart(); toggleCart();
         }
-
-        // --- ระบบ Slider ทำงานอิสระเหมือนเดิม ---
-        let currentSlide = 0;
-        const slides = document.querySelectorAll(".slide");
-        setInterval(() => {
-            if(slides.length > 0) {
-                slides[currentSlide].classList.remove("active");
-                currentSlide = (currentSlide + 1) % slides.length;
-                slides[currentSlide].classList.add("active");
-            }
-        }, 3500);
     </script>
 </body>
 </html>
