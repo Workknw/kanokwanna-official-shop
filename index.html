@@ -140,6 +140,20 @@
             .search-input { display: none; }
             .cart-panel { width: 100%; }
         }
+        .nav-btn {
+    padding: 10px 20px;
+    border-radius: 50px;
+    background: rgba(0,0,0,0.05);
+    color: var(--primary);
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.nav-btn:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+}
     </style>
 </head>
 <body>
@@ -151,7 +165,7 @@
         <div class="nav-content">
             <a href="#" class="brand-logo">KANOKWAN SHOP</a>
             <div class="nav-right">
-                <a href="https://workknw.github.io/kanokwanna-official-website/">หน้าแรก</a>
+                <a href="https://workknw.github.io/kanokwanna-official-website/" class="nav-btn">หน้าแรก</a>
                 <input type="text" placeholder="ค้นหาสินค้า..." class="search-input">
                 <div onclick="toggleCart()" style="cursor:pointer; background:var(--dark); color:white; padding:10px 22px; border-radius:50px; font-size:14px; font-weight:600;">
                     🛒 รายการสินค้า (<span id="cart-count">0</span>)
