@@ -141,19 +141,19 @@
             .cart-panel { width: 100%; }
         }
         .nav-btn {
-    padding: 10px 20px;
-    border-radius: 50px;
-    background: rgba(0,0,0,0.05);
-    color: var(--primary);
-    font-weight: 600;
-    transition: 0.3s;
-}
+            padding: 10px 20px;
+            border-radius: 50px;
+            background: rgba(0,0,0,0.05);
+            color: var(--primary);
+            font-weight: 600;
+            transition: 0.3s;
+        }
 
-.nav-btn:hover {
-    background: var(--primary);
-    color: white;
-    transform: translateY(-2px);
-}
+        .nav-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 <body>
@@ -230,18 +230,65 @@
         <p style="opacity:0.5; font-size:14px; margin-top:10px;">Elite Uniform Tailoring | Master Tailors Since 1999</p>
     </footer>
 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        // ⚠️ อย่าลืมใส่ Config ของคุณตรงนี้นะครับ
+        const firebaseConfig = {
+            apiKey: "YOUR_KEY",
+            authDomain: "...",
+            projectId: "...",
+            // รูปแบบมาตรฐานจะมี storageBucket, messagingSenderId, appId ด้วย
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // นำฟังก์ชันเชื่อมต่อกับ window เพื่อให้สคริปต์หลัก (ด้านล่าง) เรียกใช้งานได้
+        window.loadProducts = async function() {
+            const container = document.getElementById('productGrid');
+            container.innerHTML = "<p style='grid-column: 1/-1; text-align: center; padding: 50px; color: #999;'>กำลังโหลดสินค้าจากฐานข้อมูล...</p>";
+
+            try {
+                const querySnapshot = await getDocs(collection(db, "products"));
+                let products = [];
+                
+                querySnapshot.forEach((doc) => {
+                    products.push({ id: doc.id, ...doc.data() });
+                });
+
+                // เรียกใช้ฟังก์ชันแสดงผล (โค้ดเดิมของคุณ)
+                if (window.renderProductsUI) {
+                    window.renderProductsUI(products);
+                }
+            } catch (error) {
+                console.error("Firebase Error:", error);
+                container.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: red; padding: 50px;'>โหลดสินค้าไม่สำเร็จ กรุณาตรวจสอบ Firebase Config หรือสิทธิ์ Firestore Rules</p>";
+            }
+        };
+    </script>
+
     <script>
         let cart = JSON.parse(localStorage.getItem('kanokwan_cart')) || [];
         
         window.onload = () => {
             renderCart();
-            loadProducts(); 
+            // ลองเรียกฟังก์ชันโหลดจาก Firebase ทันทีที่โหลดหน้าเสร็จ
+            if (window.loadProducts) {
+                window.loadProducts(); 
+            } else {
+                // เผื่อ Module Firebase ด้านบนโหลดช้ากว่า
+                setTimeout(() => {
+                    if (window.loadProducts) window.loadProducts();
+                }, 800);
+            }
         };
 
-        function loadProducts() {
+        // เปลี่ยนโครงสร้างการแสดงผลรับค่า products มาจาก Firebase แทน
+        window.renderProductsUI = function(products) {
             const container = document.getElementById('productGrid');
-            let products = JSON.parse(localStorage.getItem('products')) || [];
-
+            
             products = products.filter(p => p.status !== 'inactive');
 
             if (products.length === 0) {
@@ -295,7 +342,6 @@
                 </div>
                 `;
 
-                // ✅ Point 1 Fix: Initial Sync - Ensure correct price displays immediately on load
                 setTimeout(() => {
                     const select = document.getElementById(`size-${i}`);
                     if(select) {
@@ -322,14 +368,13 @@
             }
         }
 
-        // ✅ Point 2 Fix: Removed basePrice argument to prevent bugs and use data-price directly
         function addToCart(name, qtyId, sizeId) {
             const qtyInput = document.getElementById(qtyId);
             const sizeSelect = document.getElementById(sizeId);
             const qty = parseInt(qtyInput.value);
             const size = sizeSelect.value;
             const selectedOption = sizeSelect.options[sizeSelect.selectedIndex];
-            const price = Number(selectedOption.dataset.price); // Direct reliable data
+            const price = Number(selectedOption.dataset.price); 
 
             const existing = cart.find(item => item.name === name && item.size === size);
             if(existing) existing.qty += qty;
@@ -424,6 +469,7 @@
             saveCart();
         }
 
+        // --- ระบบ Slider ทำงานอิสระเหมือนเดิม ---
         let currentSlide = 0;
         const slides = document.querySelectorAll(".slide");
         setInterval(() => {
