@@ -10,6 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
+/* CSS คงเดิมทั้งหมด ไม่มีการเปลี่ยนแปลง */
 :root {
     --primary: #004d2a;
     --accent: #006738;
@@ -25,7 +26,7 @@ body {
     background-color: var(--bg);
     color: var(--text);
     margin: 0; padding: 40px 20px;
-    display: none; /* ล็อคระบบ */
+    display: none; 
 }
 
 .admin-container {
@@ -192,7 +193,33 @@ button {
     <div id="productList"></div>
 </div>
 
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// ⚠️ ให้เอาค่า Config จาก Firebase Project ของคุณมาใส่ตรงนี้นะครับ
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ผูกฟังก์ชันเข้ากับ window เพื่อให้ HTML เรียกใช้ได้เมื่อเป็น module
+window.updatePreview = updatePreview;
+window.handleImageUpload = handleImageUpload;
+window.handleSave = handleSave;
+window.resetForm = resetForm;
+window.exportData = exportData;
+window.renderProducts = renderProducts;
+window.editProduct = editProduct;
+window.deleteProduct = deleteProduct;
+
 // 🔒 1. ล็อคระบบหลังบ้าน
 const adminPass = prompt("Admin Password:");
 if(adminPass !== "1234") {
@@ -203,13 +230,29 @@ if(adminPass !== "1234") {
     document.body.style.display = "block";
 }
 
-let editIndex = null;
+let editDocId = null; // ใช้ Document ID ของ Firebase แทน Index เดิม
 let imageBase64 = "";
+let productsLocal = []; // ตัวแปรเก็บข้อมูลชั่วคราวเพื่อลดการดึงข้อมูลจาก Firebase ซ้ำซ้อน
 
-window.onload = () => {
+window.onload = async () => {
     updatePreview();
-    renderProducts();
+    await fetchProducts(); // ดึงข้อมูลจาก Firebase ตอนโหลดหน้า
 };
+
+// ดึงข้อมูลทั้งหมดจาก Firestore
+async function fetchProducts() {
+    productsLocal = [];
+    try {
+        const querySnapshot = await getDocs(collection(db, "products"));
+        querySnapshot.forEach((doc) => {
+            productsLocal.push({ id: doc.id, ...doc.data() });
+        });
+        renderProducts();
+    } catch (error) {
+        console.error("Error fetching products: ", error);
+        alert("ไม่สามารถดึงข้อมูลจากฐานข้อมูลได้");
+    }
+}
 
 function handleImageUpload(event) {
     const file = event.target.files[0];
@@ -255,15 +298,13 @@ function updatePreview() {
     if(imageBase64) document.getElementById('preview-img-tag').src = imageBase64;
 }
 
-function handleSave() {
+// 🎯 ฟังก์ชันเพิ่ม/อัปเดตข้อมูลไปยัง Firebase
+async function handleSave() {
     const name = document.getElementById('name').value;
     const price = document.getElementById('price').value;
     
     if (!name || !price) return alert("กรุณากรอกชื่อและราคาปกติ!");
 
-    let products = JSON.parse(localStorage.getItem('products')) || [];
-
-    // ระบบจัดการข้อมูลไซส์ใหม่
     const sizeRaw = document.getElementById('sizes').value;
     const sizeData = sizeRaw.split(',').map(item => {
         const parts = item.split(':');
@@ -274,7 +315,6 @@ function handleSave() {
     }).filter(s => s.size !== "");
 
     const newProduct = {
-        id: editIndex !== null ? products[editIndex].id : Date.now(),
         name: name,
         price: Number(price),
         salePrice: Number(document.getElementById('salePrice').value) || 0,
@@ -289,28 +329,34 @@ function handleSave() {
         img: imageBase64
     };
 
-    if (editIndex !== null) {
-        products[editIndex] = newProduct;
-    } else {
-        products.push(newProduct);
+    try {
+        if (editDocId !== null) {
+            // อัปเดตข้อมูลเดิม (UpdateDoc)
+            const productRef = doc(db, "products", editDocId);
+            await updateDoc(productRef, newProduct);
+            alert("อัปเดตสินค้าสำเร็จ!");
+        } else {
+            // เพิ่มข้อมูลใหม่ (AddDoc)
+            newProduct.createdAt = Date.now(); // เก็บเวลาตอนสร้างไว้ด้วย
+            await addDoc(collection(db, "products"), newProduct);
+            alert("บันทึกสินค้าใหม่สำเร็จ!");
+        }
+        resetForm();
+        await fetchProducts(); // โหลดข้อมูลใหม่หลังจากบันทึก
+    } catch (error) {
+        console.error("Error saving document: ", error);
+        alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
     }
-
-    localStorage.setItem('products', JSON.stringify(products));
-    alert("บันทึกสำเร็จ!");
-    resetForm();
-    renderProducts();
 }
 
 function renderProducts() {
     const list = document.getElementById('productList');
     const keyword = document.getElementById('searchBox').value.toLowerCase();
-    let products = JSON.parse(localStorage.getItem('products')) || [];
 
-    let filtered = products.filter(p => p.name.toLowerCase().includes(keyword));
+    let filtered = productsLocal.filter(p => p.name.toLowerCase().includes(keyword));
     list.innerHTML = '';
 
-    [...filtered].reverse().forEach((p, idx) => {
-        const originalIndex = products.findIndex(item => item.id === p.id);
+    [...filtered].reverse().forEach((p) => {
         list.innerHTML += `
             <div class="product-item">
                 <div>
@@ -321,16 +367,16 @@ function renderProducts() {
                     <small>฿${p.price} | สต็อก: ${p.stock} | ขายแล้ว: ${p.sold || 0}</small>
                 </div>
                 <div class="item-btns">
-                    <button class="btn-edit" onclick="editProduct(${originalIndex})">แก้ไข</button>
-                    <button class="btn-delete" onclick="deleteProduct(${originalIndex})">ลบ</button>
+                    <button class="btn-edit" onclick="editProduct('${p.id}')">แก้ไข</button>
+                    <button class="btn-delete" onclick="deleteProduct('${p.id}')">ลบ</button>
                 </div>
             </div>`;
     });
 }
 
-function editProduct(index) {
-    const products = JSON.parse(localStorage.getItem('products'));
-    const p = products[index];
+function editProduct(id) {
+    const p = productsLocal.find(item => item.id === id);
+    if(!p) return;
 
     document.getElementById('name').value = p.name;
     document.getElementById('price').value = p.price;
@@ -340,15 +386,14 @@ function editProduct(index) {
     document.getElementById('stock').value = p.stock;
     document.getElementById('sold').value = p.sold || 0;
     document.getElementById('desc').value = p.description;
-    document.getElementById('category').value = p.category;
-    document.getElementById('status').value = p.status;
+    document.getElementById('category').value = p.category || "";
+    document.getElementById('status').value = p.status || "active";
     
-    // แปลงไซส์กลับเป็นข้อความ S:200, M:250
     const sizeText = p.sizes ? p.sizes.map(s => `${s.size}:${s.price}`).join(', ') : "";
     document.getElementById('sizes').value = sizeText;
 
-    imageBase64 = p.img;
-    editIndex = index;
+    imageBase64 = p.img || "";
+    editDocId = id; // เก็บ ID ที่กำลังแก้ไข
     
     document.getElementById('form-title').innerText = "✏️ แก้ไขสินค้า";
     document.getElementById('main-btn').innerText = "ยืนยันการแก้ไข";
@@ -359,7 +404,7 @@ function editProduct(index) {
 }
 
 function resetForm() {
-    editIndex = null;
+    editDocId = null;
     imageBase64 = "";
     document.getElementById('name').value = '';
     document.getElementById('price').value = '';
@@ -370,27 +415,33 @@ function resetForm() {
     document.getElementById('sold').value = '';
     document.getElementById('desc').value = '';
     document.getElementById('sizes').value = '';
-    document.getElementById('form-title').innerText = "📦 เพิ่มสินค้าใหม่ (V2)";
+    document.getElementById('form-title').innerText = "📦 เพิ่มสินค้าใหม่";
     document.getElementById('main-btn').innerText = "บันทึกข้อมูลสินค้า";
     document.getElementById('cancel-btn').style.display = "none";
     updatePreview();
 }
 
-function deleteProduct(index) {
-    if(confirm("ลบสินค้านี้?")) {
-        let products = JSON.parse(localStorage.getItem('products'));
-        products.splice(index, 1);
-        localStorage.setItem('products', JSON.stringify(products));
-        renderProducts();
+// 🎯 ฟังก์ชันลบข้อมูลจาก Firebase
+async function deleteProduct(id) {
+    if(confirm("ยืนยันที่จะลบสินค้านี้?")) {
+        try {
+            await deleteDoc(doc(db, "products", id));
+            await fetchProducts(); // โหลดข้อมูลใหม่หลังจากลบ
+        } catch (error) {
+            console.error("Error deleting document: ", error);
+            alert("ไม่สามารถลบข้อมูลได้");
+        }
     }
 }
 
+// สำรองข้อมูล Export ใช้งานได้ตามปกติ (ดึงจากตัวแปรที่ดึงมาจาก Firebase อีกที)
 function exportData() {
-    const data = localStorage.getItem('products');
+    if(productsLocal.length === 0) return alert("ไม่มีข้อมูลให้สำรอง");
+    const data = JSON.stringify(productsLocal, null, 2);
     const blob = new Blob([data], {type: "application/json"});
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = `kanokwan_v2_backup.json`;
+    a.download = `firebase_backup_${new Date().getTime()}.json`;
     a.click();
 }
 </script>
