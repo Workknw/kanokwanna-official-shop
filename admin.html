@@ -62,7 +62,6 @@
         .custom-scroll::-webkit-scrollbar { width: 4px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
     </style>
-</head>
 <body class="flex h-screen overflow-hidden">
 
     <!-- 🔒 LOGIN OVERLAY (Apple Style) -->
@@ -120,399 +119,466 @@
             </div>
         </header>
 
-        <!-- SCROLLABLE CONTAINER -->
-        <div class="flex-1 overflow-y-auto p-8 custom-scroll">
-            
-            <!-- SECTION: DASHBOARD -->
-            <div id="section-dashboard">
-                <div class="mb-8">
-                    <h1 class="text-3xl font-bold text-emerald-950 tracking-tight">ภาพรวมร้านค้า</h1>
-                    <p class="text-emerald-600/70 font-medium">ยินดีต้อนรับกลับครับ หจก. กนกวรรณ ทับทอง</p>
+
+<div class="header-nav">
+    <div style="font-family:'Plus Jakarta Sans'; font-weight:800; color:var(--primary); font-size:20px;">KNWT ADMIN</div>
+    <div class="tab-nav">
+        <button onclick="switchTab('products')" class="tab-btn active" id="tab-p"><i class="fas fa-box"></i> สินค้า</button>
+        <button onclick="switchTab('orders')" class="tab-btn" id="tab-o"><i class="fas fa-file-invoice"></i> ออเดอร์ <span id="badge-order-count" style="background:red; color:white; font-size:10px; padding:2px 6px; border-radius:10px; display:none;">0</span></button>
+    </div>
+    <button onclick="exportData()" class="btn-ghost" style="font-size: 13px;"><i class="fas fa-download"></i> Backup</button>
+</div>
+
+<div class="main-content">
+    
+    <!-- 📦 PRODUCT TAB -->
+    <div id="product-page">
+        <div class="stats-grid">
+            <div class="stat-card" style="border-bottom-color: var(--primary);">
+                <h4>Total Items</h4><p id="stat-total">0</p>
+            </div>
+            <div class="stat-card" style="border-bottom-color: var(--danger);">
+                <h4>Low Stock</h4><p id="stat-low">0</p>
+            </div>
+            <div class="stat-card" style="border-bottom-color: #3b82f6;">
+                <h4>Sold (Units)</h4><p id="stat-sold">0</p>
+            </div>
+            <div class="stat-card" style="border-bottom-color: #f59e0b;">
+                <h4>Best Sellers</h4><p id="stat-bestseller">0</p>
+            </div>
+        </div>
+
+        <div class="admin-grid">
+            <div class="form-section glass-card">
+                <h2 id="form-title"><i class="fas fa-plus-circle"></i> ข้อมูลสินค้า</h2>
+                <div class="row">
+                    <div style="flex: 2;">
+                        <label>ชื่อสินค้า</label>
+                        <input id="name" placeholder="ระบุชื่อสินค้า..." oninput="updatePreview()">
+                    </div>
+                    <div>
+                        <label>หมวดหมู่</label>
+                        <select id="category" onchange="updatePreview()">
+                            <option value="Shirt">เสื้อยูนิฟอร์ม</option>
+                            <option value="Pants">กางเกง</option>
+                            <option value="General">ทั่วไป</option>
+                        </select>
+                    </div>
                 </div>
 
-                <!-- 📊 STAT CARDS -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <div class="ios-card p-6 border-none">
-                        <p class="text-xs font-bold text-emerald-500 uppercase tracking-widest mb-1">สินค้าในระบบ</p>
-                        <h3 class="text-3xl font-bold text-emerald-950" id="stat-total">0</h3>
-                        <div class="mt-4 text-[10px] text-emerald-400 bg-emerald-50 w-max px-2 py-1 rounded-md">Updated Real-time</div>
+                <div class="row">
+                    <div>
+                        <label>ราคาป้าย (บาท)</label>
+                        <input id="price" type="number" placeholder="0" oninput="updatePreview()">
                     </div>
-                    <div class="ios-card p-6 border-none">
-                        <p class="text-xs font-bold text-orange-500 uppercase tracking-widest mb-1">สต็อกใกล้หมด</p>
-                        <h3 class="text-3xl font-bold text-orange-600" id="stat-low">0</h3>
-                        <p class="text-[10px] text-orange-400 mt-4">ควรเติมสินค้าด่วน</p>
-                    </div>
-                    <div class="ios-card p-6 border-none bg-emerald-600">
-                        <p class="text-xs font-bold text-emerald-100 uppercase tracking-widest mb-1">ยอดขายสะสม</p>
-                        <h3 class="text-3xl font-bold text-white" id="stat-sold">0</h3>
-                        <p class="text-[10px] text-emerald-200/60 mt-4">จากสินค้าทุกหมวดหมู่</p>
-                    </div>
-                    <div class="ios-card p-6 border-none">
-                        <p class="text-xs font-bold text-emerald-500 uppercase tracking-widest mb-1">BEST SELLER</p>
-                        <h3 class="text-3xl font-bold text-emerald-950" id="stat-bestseller">0</h3>
-                        <p class="text-[10px] text-emerald-400 mt-4">รายการยอดนิยม</p>
+                    <div>
+                        <label>ราคาลด (Sale Price)</label>
+                        <input id="salePrice" type="number" placeholder="ถ้ามี" oninput="updatePreview()">
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div class="lg:col-span-2 ios-card p-8 border-none">
-                        <h3 class="text-lg font-bold text-emerald-950 mb-6 flex items-center gap-2">
-                            <span class="w-2 h-6 bg-emerald-500 rounded-full"></span> สถิติสินค้าแยกหมวดหมู่
-                        </h3>
-                        <div class="h-[320px]"><canvas id="categoryChart"></canvas></div>
-                    </div>
-                    <div class="ios-card p-8 border-none">
-                        <h3 class="text-lg font-bold text-emerald-950 mb-6">สินค้าล่าสุด</h3>
-                        <div id="recent-items" class="space-y-4">
-                            <!-- Items appear here -->
-                        </div>
-                    </div>
+                <div style="display:flex; gap:20px; background:#f9f9f9; padding:15px; border-radius:12px; margin-bottom:15px; border:1px solid #eee;">
+                    <label style="margin:0; cursor:pointer;"><input type="checkbox" id="isSale" onchange="updatePreview()"> เปิด Sale</label>
+                    <label style="margin:0; cursor:pointer;"><input type="checkbox" id="isBestSeller" onchange="updatePreview()"> Best Seller</label>
+                </div>
+
+                <div class="row">
+                    <div><label>คงเหลือในสต็อก</label><input id="stock" type="number" value="0"></div>
+                    <div><label>ยอดขายสะสม</label><input id="sold" type="number" value="0"></div>
+                </div>
+
+                <label>รายละเอียด</label>
+                <textarea id="desc" rows="3" placeholder="ข้อมูลเนื้อผ้า, ไซส์..." oninput="updatePreview()"></textarea>
+
+                <label>อัปโหลดรูปภาพ</label>
+                <div class="upload-area" id="drop-zone">
+                    <i class="fas fa-cloud-upload-alt" style="font-size:30px; color:var(--primary); margin-bottom:10px;"></i>
+                    <p style="margin:0; font-size:14px;">คลิก หรือ ลากไฟล์รูปภาพมาวาง</p>
+                    <input type="file" id="fileInput" accept="image/*" multiple style="display:none;">
+                </div>
+                <div id="thumb-container" class="thumb-list"></div>
+
+                <label>ไซส์ที่เปิดขาย (เช่น S, M, L)</label>
+                <input id="sizes" placeholder="S, M, L, XL" oninput="updatePreview()">
+
+                <div style="display:flex; gap:10px;">
+                    <button id="main-btn" class="btn-main" onclick="handleSave()">บันทึกข้อมูลสินค้า</button>
+                    <button id="cancel-btn" class="btn-ghost" style="display:none;" onclick="resetForm()">ยกเลิก</button>
                 </div>
             </div>
 
-            <!-- SECTION: PRODUCTS MANAGEMENT -->
-            <div id="section-products" class="hidden">
-                <div class="flex items-center justify-between mb-8">
-                    <h2 class="text-2xl font-bold text-emerald-950" id="form-title">📦 จัดการสินค้า</h2>
-                    <button onclick="resetForm()" class="bg-emerald-600 text-white px-8 py-3 rounded-2xl text-sm font-bold shadow-lg shadow-emerald-200 hover:scale-105 transition-transform">
-                        <i class="fas fa-plus mr-2"></i>เพิ่มรายการใหม่
-                    </button>
-                </div>
-
-                <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
-                    <!-- Form Part -->
-                    <div class="xl:col-span-8 space-y-6">
-                        <div class="ios-card p-8 border-none shadow-xl">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div class="col-span-2">
-                                    <label class="block text-xs font-bold text-emerald-700/50 uppercase mb-2 ml-1">ชื่อสินค้า</label>
-                                    <input id="name" oninput="updatePreview()" class="w-full ios-input" placeholder="เช่น ชุดนักเรียนตรากนกวรรณ">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-emerald-700/50 uppercase mb-2 ml-1">ราคาปกติ</label>
-                                    <input id="price" type="number" oninput="updatePreview()" class="w-full ios-input" placeholder="0.00">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-emerald-700/50 uppercase mb-2 ml-1">ราคาโปรโมชั่น (ถ้ามี)</label>
-                                    <input id="salePrice" type="number" oninput="updatePreview()" class="w-full ios-input" placeholder="0.00">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-emerald-700/50 uppercase mb-2 ml-1">สต็อก (ชิ้น)</label>
-                                    <input id="stock" type="number" value="0" oninput="updatePreview()" class="w-full ios-input">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-emerald-700/50 uppercase mb-2 ml-1">หมวดหมู่สินค้า</label>
-                                    <select id="category" onchange="updatePreview()" class="w-full ios-input appearance-none">
-                                        <option value="Uniform">ชุดนักเรียน</option>
-                                        <option value="Corporate">ชุดหน่วยงาน</option>
-                                        <option value="General">สินค้าทั่วไป</option>
-                                    </select>
-                                </div>
-                                <div class="col-span-2 bg-emerald-50/50 p-6 rounded-2xl flex gap-8 border border-emerald-100">
-                                    <label class="flex items-center gap-3 cursor-pointer font-bold text-emerald-800 text-sm">
-                                        <input type="checkbox" id="isSale" onchange="updatePreview()" class="w-6 h-6 rounded-lg border-emerald-200 accent-emerald-600"> 🏷️ เปิดโปรโมชั่น
-                                    </label>
-                                    <label class="flex items-center gap-3 cursor-pointer font-bold text-emerald-800 text-sm">
-                                        <input type="checkbox" id="isBestSeller" onchange="updatePreview()" class="w-6 h-6 rounded-lg border-emerald-200 accent-emerald-600"> ⭐ สินค้าแนะนำ
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div class="mt-8">
-                                <label class="block text-xs font-bold text-emerald-700/50 uppercase mb-2 ml-1">รูปภาพสินค้า</label>
-                                <div id="drop-zone" class="bg-emerald-50/30 border-2 border-dashed border-emerald-200 rounded-3xl p-10 text-center cursor-pointer hover:bg-emerald-50 hover:border-emerald-400 transition-all group">
-                                    <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm group-hover:scale-110 transition-transform">
-                                        <i class="fas fa-camera text-2xl text-emerald-500"></i>
-                                    </div>
-                                    <p class="text-sm font-bold text-emerald-800">เลือกรูปภาพสินค้า</p>
-                                    <p class="text-[11px] text-emerald-500 mt-1">แนะนำขนาด 1000x1250 px (แนวตั้ง)</p>
-                                    <input type="file" id="fileInput" accept="image/*" multiple class="hidden">
-                                </div>
-                                <div id="thumb-container" class="flex gap-4 mt-6 overflow-x-auto pb-2 custom-scroll"></div>
-                            </div>
-
-                            <div class="mt-10 flex gap-4">
-                                <button id="main-btn" onclick="handleSavePro()" class="flex-1 bg-emerald-600 text-white font-bold py-5 rounded-2xl shadow-xl shadow-emerald-200 hover:bg-emerald-700 active:scale-[0.98] transition-all">บันทึกข้อมูลเข้าคลัง</button>
-                                <button id="cancel-btn" onclick="resetForm()" class="hidden px-10 bg-gray-100 text-gray-500 font-bold py-5 rounded-2xl hover:bg-gray-200 transition-all">ยกเลิก</button>
-                            </div>
+            <div class="preview-section">
+                <div class="preview-sticky">
+                    <p style="font-size: 11px; font-weight: 800; color: #999; margin-bottom: 10px; letter-spacing: 1px;">PREVIEW ON APP</p>
+                    <div class="preview-card">
+                        <div id="badge-best" class="badge-best" style="display:none;">BEST SELLER</div>
+                        <div class="image-preview-container">
+                            <img id="preview-img-tag" src="https://via.placeholder.com/400x500?text=KNWT+Shop">
+                            <div id="img-count" style="display:none; position:absolute; bottom:15px; right:15px; background:rgba(0,0,0,0.6); color:white; padding:4px 12px; border-radius:20px; font-size:11px;">+0 images</div>
                         </div>
-                    </div>
-
-                    <!-- iOS Mockup Preview -->
-                    <div class="xl:col-span-4">
-                        <div class="sticky top-4 bg-white rounded-[45px] p-4 shadow-2xl border-[8px] border-emerald-950 h-[680px] w-full max-w-[320px] mx-auto overflow-hidden flex flex-col">
-                            <div class="w-32 h-6 bg-emerald-950 rounded-b-2xl mx-auto mb-4"></div>
-                            <div class="flex-1 overflow-y-auto custom-scroll px-2">
-                                <div class="relative aspect-[4/5] rounded-3xl overflow-hidden mb-4 bg-emerald-50 shadow-inner">
-                                    <img id="preview-img-tag" src="https://via.placeholder.com/400x500?text=KNW+Store" class="w-full h-full object-cover">
-                                    <div id="badge-best" class="hidden absolute top-3 right-3 bg-white/90 backdrop-blur text-emerald-600 text-[9px] font-black px-2 py-1 rounded-lg shadow-sm">BEST SELLER</div>
-                                </div>
-                                <h4 id="preview-name" class="text-lg font-black text-emerald-950 leading-tight mb-2">ชื่อสินค้าตัวอย่าง</h4>
-                                <div id="price-area" class="mb-4">
-                                    <span class="text-2xl font-black text-emerald-600">฿0</span>
-                                </div>
-                                <div class="grid grid-cols-2 gap-2 mt-4">
-                                    <div class="bg-emerald-50 p-3 rounded-2xl text-center">
-                                        <p class="text-[9px] font-bold text-emerald-400 uppercase">Stock</p>
-                                        <p id="preview-stock" class="text-sm font-black text-emerald-800">0</p>
-                                    </div>
-                                    <div class="bg-emerald-50 p-3 rounded-2xl text-center">
-                                        <p class="text-[9px] font-bold text-emerald-400 uppercase">Category</p>
-                                        <p id="preview-cat" class="text-[10px] font-black text-emerald-800 truncate">General</p>
-                                    </div>
-                                </div>
-                            </div>
+                        <div style="padding:25px;">
+                            <p id="preview-name" style="margin:0; font-weight:800; font-size:22px; color:var(--primary);">ชื่อสินค้า</p>
+                            <div id="price-area" style="margin-top:5px;"></div>
+                            <div id="preview-sizes-list" style="margin-top:10px; display:flex; gap:5px;"></div>
+                            <p id="preview-desc" style="font-size:13px; color:#666; margin-top:15px; white-space:pre-line; line-height:1.6;"></p>
                         </div>
-                    </div>
-                </div>
-
-                <!-- PRODUCT LIST -->
-                <div class="mt-12 ios-card border-none overflow-hidden mb-20 shadow-xl">
-                    <div class="p-8 border-b border-emerald-50 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div>
-                            <h3 class="text-xl font-bold text-emerald-950">รายการสินค้าทั้งหมด</h3>
-                            <p id="item-count" class="text-sm font-medium text-emerald-500">0 รายการในคลัง</p>
-                        </div>
-                        <div id="bulk-bar" class="hidden items-center gap-3 bg-emerald-600 p-2 rounded-2xl">
-                            <span id="bulk-count" class="text-xs font-bold text-white px-3">เลือกอยู่ 0 รายการ</span>
-                            <button onclick="bulkStatus('active')" class="bg-white/20 text-white text-[10px] font-bold px-3 py-2 rounded-xl hover:bg-white/30 transition-colors">เปิดขาย</button>
-                            <button onclick="bulkDeletePro()" class="bg-red-500 text-white text-[10px] font-bold px-3 py-2 rounded-xl">ลบด่วน</button>
-                            <button onclick="clearSelection()" class="text-white/60 px-2"><i class="fas fa-times"></i></button>
-                        </div>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left">
-                            <thead class="bg-emerald-50/50 text-emerald-800 text-[11px] uppercase font-black tracking-widest">
-                                <tr>
-                                    <th class="px-8 py-5 w-10"></th>
-                                    <th class="px-8 py-5">สินค้า</th>
-                                    <th class="px-8 py-5">หมวด</th>
-                                    <th class="px-8 py-5">ราคา</th>
-                                    <th class="px-8 py-5">สต็อก</th>
-                                    <th class="px-8 py-5">สถานะ</th>
-                                    <th class="px-8 py-5 text-right">การจัดการ</th>
-                                </tr>
-                            </thead>
-                            <tbody id="productList" class="divide-y divide-emerald-50">
-                                <!-- Data rows -->
-                            </tbody>
-                        </table>
                     </div>
                 </div>
             </div>
         </div>
-    </main>
+
+        <!-- List Section -->
+        <div class="glass-card">
+            <div id="bulk-bar" class="bulk-bar">
+                <span id="bulk-count" style="font-weight:700;">เลือกแล้ว 0 รายการ</span>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="bulkStatus('active')" class="btn-ghost" style="background:#fff; color:var(--primary)">เปิดขาย</button>
+                    <button onclick="bulkStatus('inactive')" class="btn-ghost" style="background:rgba(255,255,255,0.2); color:white; border:1px solid white;">ซ่อน</button>
+                    <button onclick="bulkDelete()" class="btn-ghost" style="background:#ff4444; color:white;">ลบทิ้ง</button>
+                    <button onclick="clearSelection()" class="btn-ghost">ยกเลิก</button>
+                </div>
+            </div>
+            
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h3 style="margin:0;">📦 รายการสินค้าทั้งหมด</h3>
+                <input id="searchBox" placeholder="ค้นหาชื่อสินค้า..." oninput="renderProducts()" style="width:250px; margin:0;">
+            </div>
+            <div id="productList"></div>
+        </div>
+    </div>
+
+    <!-- 🧾 ORDER TAB -->
+    <div id="order-page" style="display:none;">
+        <div class="stats-grid">
+            <div class="stat-card" style="border-bottom-color: #f59e0b;">
+                <h4>Pending Orders</h4><p id="stat-pending">0</p>
+            </div>
+            <div class="stat-card" style="border-bottom-color: #10b981;">
+                <h4>Shipped</h4><p id="stat-shipped-count">0</p>
+            </div>
+        </div>
+        <div id="orderList"></div>
+    </div>
+
+</div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, query, orderBy, writeBatch, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, query, orderBy, writeBatch, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const firebaseConfig = {
-    apiKey: "AIzaSy...",
-    authDomain: "kanokwan-shop-edcf3.firebaseapp.com",
-    projectId: "kanokwan-shop-edcf3",
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-// ================= STATE =================
-let editDocId = null;
-let imageList = [];
-let productsLocal = [];
-let selectedIds = new Set();
-
-let unsubProducts = null;
-let unsubOrders = null;
-
-// ================= TAB =================
-window.switchTab = (tab) => {
-    const isP = tab === 'products';
-    document.getElementById('product-page').style.display = isP ? 'block' : 'none';
-    document.getElementById('order-page').style.display = isP ? 'none' : 'block';
-
-    if (isP) {
-        listenProducts();
-    } else {
-        listenOrders();
-    }
-};
-
-// ================= PRODUCTS =================
-function listenProducts() {
-    if (unsubProducts) unsubProducts();
-
-    unsubProducts = onSnapshot(
-        query(collection(db, "products"), orderBy("updatedAt", "desc")),
-        (snap) => {
-            productsLocal = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-            updateStats();
-            renderProducts();
-        }
-    );
-}
-
-function updateStats() {
-    document.getElementById('stat-total').innerText = productsLocal.length;
-    document.getElementById('stat-low').innerText = productsLocal.filter(p => (p.stock || 0) < 5).length;
-    document.getElementById('stat-sold').innerText = productsLocal.reduce((a, p) => a + (p.sold || 0), 0);
-    document.getElementById('stat-bestseller').innerText = productsLocal.filter(p => p.isBestSeller).length;
-}
-
-// ===== debounce search =====
-let searchTimeout;
-window.renderProducts = () => {
-    clearTimeout(searchTimeout);
-    searchTimeout = setTimeout(_renderProducts, 250);
-};
-
-function _renderProducts() {
-    const list = document.getElementById('productList');
-    const keyword = (document.getElementById('searchBox').value || "").toLowerCase();
-
-    const filtered = productsLocal.filter(p =>
-        (p.name || "").toLowerCase().includes(keyword) ||
-        (p.category || "").toLowerCase().includes(keyword)
-    );
-
-    if (!filtered.length) {
-        list.innerHTML = `<p style="text-align:center;color:#999;">ไม่มีสินค้า</p>`;
-        return;
-    }
-
-    document.getElementById('item-count').innerText = `${filtered.length} รายการ`;
-
-    list.innerHTML = filtered.map(p => {
-        const checked = selectedIds.has(p.id) ? 'checked' : '';
-        return `
-        <div class="product-item">
-            <input type="checkbox" ${checked} onchange="toggleSelect('${p.id}')">
-            <img src="${p.img || p.images?.[0] || 'https://via.placeholder.com/50'}">
-            <div>
-                <b>${p.name || '-'}</b> ${p.isBestSeller ? '⭐' : ''}
-                <br>฿${p.price || 0} | stock: ${p.stock || 0}
-            </div>
-            <button onclick="editProduct('${p.id}')">แก้ไข</button>
-            <button onclick="deleteProduct('${p.id}')">ลบ</button>
-        </div>`;
-    }).join('');
-}
-
-// ================= SAVE =================
-window.handleSave = async () => {
-    const name = document.getElementById('name').value;
-    const price = Number(document.getElementById('price').value);
-
-    if (!name || price <= 0) {
-        return Swal.fire('กรอกข้อมูลไม่ครบ', '', 'warning');
-    }
-
-    const payload = {
-        name,
-        price,
-        salePrice: Number(document.getElementById('salePrice').value) || 0,
-        isSale: document.getElementById('isSale').checked,
-        isBestSeller: document.getElementById('isBestSeller').checked,
-        stock: Number(document.getElementById('stock').value) || 0,
-        sold: Number(document.getElementById('sold').value) || 0,
-        description: document.getElementById('desc').value,
-        category: document.getElementById('category').value,
-        status: document.getElementById('status').value,
-        sizes: document.getElementById('sizes').value.split(',').map(s => ({ size: s.trim(), price })),
-        img: imageList[0] || "",
-        images: imageList,
-        updatedAt: Date.now()
+    const firebaseConfig = {
+        apiKey: "AIzaSyDToPawKXOwr1zIoYuU-h8OvBrwwoM_pXE",
+        authDomain: "kanokwan-shop-edcf3.firebaseapp.com",
+        projectId: "kanokwan-shop-edcf3",
+        storageBucket: "kanokwan-shop-edcf3.firebasestorage.app",
+        messagingSenderId: "565108045695",
+        appId: "1:565108045695:web:7a16c9ee14f01d48f7cc4a"
     };
 
-    try {
-        if (editDocId) {
-            await updateDoc(doc(db, "products", editDocId), payload);
-        } else {
-            await addDoc(collection(db, "products"), {
-                ...payload,
-                createdAt: Date.now()
-            });
-        }
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-        Swal.fire('สำเร็จ', '', 'success');
-        resetForm();
+    let editDocId = null;
+    let imageList = []; 
+    let productsLocal = [];
+    let selectedIds = new Set();
 
-    } catch (e) {
-        Swal.fire('Error', e.message, 'error');
-    }
-};
+    // --- 🔄 Tab Logic ---
+    window.switchTab = (tab) => {
+        const isP = tab === 'products';
+        document.getElementById('product-page').style.display = isP ? 'block' : 'none';
+        document.getElementById('order-page').style.display = isP ? 'none' : 'block';
+        document.getElementById('tab-p').classList.toggle('active', isP);
+        document.getElementById('tab-o').classList.toggle('active', !isP);
+        if(!isP) listenOrders();
+    };
 
-// ================= ORDER =================
-function listenOrders() {
-    if (unsubOrders) unsubOrders();
-
-    unsubOrders = onSnapshot(
-        query(collection(db, "orders"), orderBy("createdAt", "desc")),
-        (snap) => {
-            const orders = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-
-            document.getElementById('orderList').innerHTML = orders.map(o => `
-                <div class="order-card">
-                    <b>Order ${o.id.slice(-5)}</b>
-                    <p>${o.customerName}</p>
-                    <p>฿${o.totalAmount}</p>
-                    ${o.status === 'pending'
-                        ? `<button onclick="approveOrder('${o.id}')">ยืนยัน</button>`
-                        : '✅ ส่งแล้ว'}
-                </div>
-            `).join('');
-        }
-    );
-}
-
-window.approveOrder = async (orderId) => {
-    const res = await Swal.fire({
-        title: 'ยืนยัน?',
-        showCancelButton: true
-    });
-
-    if (!res.isConfirmed) return;
-
-    try {
-        await runTransaction(db, async (t) => {
-            const orderRef = doc(db, "orders", orderId);
-            const orderSnap = await t.get(orderRef);
-
-            const order = orderSnap.data();
-            if (order.status !== 'pending') throw "ออเดอร์ถูกใช้แล้ว";
-
-            for (const item of order.items) {
-                const pRef = doc(db, "products", item.productId);
-                const pSnap = await t.get(pRef);
-
-                const stock = pSnap.data().stock - item.qty;
-                if (stock < 0) throw "สต็อกไม่พอ";
-
-                t.update(pRef, {
-                    stock,
-                    sold: (pSnap.data().sold || 0) + item.qty
-                });
-            }
-
-            t.update(orderRef, { status: 'shipped' });
+    // --- 📦 Product Logic ---
+    function listenProducts() {
+        const q = query(collection(db, "products"), orderBy("updatedAt", "desc"));
+        onSnapshot(q, (snapshot) => {
+            productsLocal = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            updateStats();
+            renderProducts();
         });
-
-        Swal.fire('สำเร็จ', '', 'success');
-
-    } catch (e) {
-        Swal.fire('ผิดพลาด', e, 'error');
     }
-};
 
-// ================= INIT =================
-const pass = prompt("Admin Password:");
-if (pass === "1234") {
-    document.body.style.display = "block";
-    listenProducts();
-} else {
-    document.body.innerHTML = "Access Denied";
-}
+    function updateStats() {
+        document.getElementById('stat-total').innerText = productsLocal.length;
+        document.getElementById('stat-low').innerText = productsLocal.filter(p => p.stock < 5).length;
+        document.getElementById('stat-sold').innerText = productsLocal.reduce((acc, p) => acc + (Number(p.sold) || 0), 0);
+        document.getElementById('stat-bestseller').innerText = productsLocal.filter(p => p.isBestSeller).length;
+    }
+
+    function renderProducts() {
+        const list = document.getElementById('productList');
+        const kw = document.getElementById('searchBox').value.toLowerCase();
+        let filtered = productsLocal.filter(p => p.name.toLowerCase().includes(kw));
+        
+        list.innerHTML = filtered.map(p => {
+            const isChecked = selectedIds.has(p.id) ? 'checked' : '';
+            return `
+                <div class="product-item">
+                    <input type="checkbox" onchange="toggleSelect('${p.id}')" ${isChecked} style="width:20px; height:20px; margin-right:15px;">
+                    <img src="${p.img || 'https://via.placeholder.com/50'}" style="width:60px; height:60px; object-fit:cover; border-radius:10px; margin-right:15px;">
+                    <div style="flex:1">
+                        <div style="font-weight:700; color:var(--primary);">${p.name} <span class="status-badge ${p.status === 'active' ? 'status-active' : 'status-hidden'}">${p.status}</span></div>
+                        <div style="font-size:12px; color:#777; margin-top:3px;">
+                            ฿${p.price.toLocaleString()} | คลัง: <b style="${p.stock < 5 ? 'color:red' : ''}">${p.stock}</b> | ขายแล้ว: ${p.sold}
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:5px;">
+                        <button class="btn-ghost" onclick="editProduct('${p.id}')"><i class="fas fa-edit"></i></button>
+                        <button class="btn-ghost" style="color:red;" onclick="deleteProduct('${p.id}')"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>`;
+        }).join('');
+    }
+
+    // --- 🧾 Order Logic (Real-time Sync) ---
+    function listenOrders() {
+        onSnapshot(query(collection(db, "orders"), orderBy("createdAt", "desc")), (snap) => {
+            const orders = snap.docs.map(d => ({id: d.id, ...d.data()}));
+            let p = 0, s = 0;
+            document.getElementById('orderList').innerHTML = orders.map(o => {
+                const statusLabel = o.status === 'pending' ? 'รอดำเนินการ' : 'จัดส่งแล้ว';
+                if(o.status === 'pending') p++; else s++;
+                return `
+                    <div class="order-card order-${o.status}">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                            <div>
+                                <span class="status-badge ${o.status === 'pending' ? 'status-active' : 'status-hidden'}" style="background:#eee; color:#333; margin-bottom:10px; display:inline-block;">${statusLabel}</span>
+                                <div style="font-weight:800; font-size:18px;">Order #${o.id.slice(-6).toUpperCase()}</div>
+                                <div style="color:#666; font-size:13px; margin-bottom:15px;">${new Date(o.createdAt).toLocaleString('th-TH')}</div>
+                                
+                                <div style="background:#fcfcfc; border:1px solid #eee; padding:15px; border-radius:12px;">
+                                    <div style="font-weight:700; margin-bottom:8px;"><i class="fas fa-user"></i> ${o.customerName}</div>
+                                    <div style="font-size:13px; color:#555;"><i class="fas fa-phone"></i> ${o.customerPhone}</div>
+                                    <div style="font-size:13px; color:#555; margin-top:5px;"><i class="fas fa-map-marker-alt"></i> ${o.address || 'ไม่ได้ระบุ'}</div>
+                                    <hr style="border:0; border-top:1px solid #eee; margin:10px 0;">
+                                    ${o.items.map(i => `<div style="font-size:14px; display:flex; justify-content:space-between;"><span>${i.name} (${i.size}) x ${i.qty}</span> <b>฿${(i.price * i.qty).toLocaleString()}</b></div>`).join('')}
+                                    <div style="text-align:right; margin-top:10px; font-weight:800; color:var(--primary); font-size:18px;">รวมทั้งสิ้น: ฿${o.totalAmount.toLocaleString()}</div>
+                                </div>
+                            </div>
+                            <div style="text-align:right;">
+                                ${o.status === 'pending' ? `<button onclick="approveOrder('${o.id}')" class="btn-main" style="width:auto; padding:10px 25px;">ยืนยัน & ตัดสต็อก</button>` : `<div style="color:#10b981; font-weight:800;"><i class="fas fa-check-circle"></i> ส่งเรียบร้อย</div>`}
+                            </div>
+                        </div>
+                    </div>`;
+            }).join('');
+            document.getElementById('stat-pending').innerText = p;
+            document.getElementById('stat-shipped-count').innerText = s;
+            document.getElementById('badge-order-count').innerText = p;
+            document.getElementById('badge-order-count').style.display = p > 0 ? 'inline' : 'none';
+        });
+    }
+
+    window.approveOrder = async (orderId) => {
+        const res = await Swal.fire({ title: 'ยืนยันรายการส่งสินค้า?', text: "ระบบจะทำการตัดยอดสต็อกสินค้าทันที", icon: 'question', showCancelButton: true, confirmButtonColor: '#004d2a' });
+        if(res.isConfirmed) {
+            try {
+                await runTransaction(db, async (transaction) => {
+                    const orderRef = doc(db, "orders", orderId);
+                    const orderData = (await transaction.get(orderRef)).data();
+                    if (orderData.status !== 'pending') throw "ออเดอร์นี้ถูกดำเนินการไปแล้ว";
+                    
+                    for (const item of orderData.items) {
+                        const pRef = doc(db, "products", item.productId);
+                        const pSnap = await transaction.get(pRef);
+                        if (pSnap.exists()) {
+                            const currentStock = pSnap.data().stock || 0;
+                            const currentSold = pSnap.data().sold || 0;
+                            if (currentStock < item.qty) throw `สินค้า ${item.name} สต็อกไม่พอ!`;
+                            transaction.update(pRef, { 
+                                stock: currentStock - item.qty,
+                                sold: currentSold + item.qty 
+                            });
+                        }
+                    }
+                    transaction.update(orderRef, { status: 'shipped', updatedAt: Date.now() });
+                });
+                Swal.fire('สำเร็จ', 'ดำเนินการเรียบร้อยแล้ว', 'success');
+            } catch (e) { Swal.fire('ผิดพลาด', e, 'error'); }
+        }
+    };
+
+    // --- 🛠 Helpers & UI ---
+    window.toggleSelect = (id) => {
+        selectedIds.has(id) ? selectedIds.delete(id) : selectedIds.add(id);
+        const bar = document.getElementById('bulk-bar');
+        bar.style.display = selectedIds.size > 0 ? 'flex' : 'none';
+        document.getElementById('bulk-count').innerText = `เลือกแล้ว ${selectedIds.size} รายการ`;
+        renderProducts();
+    };
+
+    window.clearSelection = () => { selectedIds.clear(); document.getElementById('bulk-bar').style.display = 'none'; renderProducts(); };
+    
+    window.bulkStatus = async (s) => {
+        const b = writeBatch(db);
+        selectedIds.forEach(id => b.update(doc(db, "products", id), {status: s, updatedAt: Date.now()}));
+        await b.commit();
+        clearSelection();
+        Swal.fire('สำเร็จ', 'อัปเดตสถานะกลุ่มแล้ว', 'success');
+    };
+
+    window.bulkDelete = async () => {
+        if(confirm(`ยืนยันลบ ${selectedIds.size} รายการ?`)) {
+            const b = writeBatch(db);
+            selectedIds.forEach(id => b.delete(doc(db, "products", id)));
+            await b.commit();
+            clearSelection();
+        }
+    };
+
+    // --- Image Handling ---
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('fileInput');
+    dropZone.onclick = () => fileInput.click();
+    dropZone.ondrop = (e) => { e.preventDefault(); handleFiles(e.dataTransfer.files); };
+    fileInput.onchange = (e) => handleFiles(e.target.files);
+    dropZone.ondragover = (e) => e.preventDefault();
+
+    function handleFiles(files) {
+        Array.from(files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    let w = img.width, h = img.height;
+                    if(w > 800) { h *= 800/w; w = 800; }
+                    canvas.width = w; canvas.height = h;
+                    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                    imageList.push(canvas.toDataURL('image/jpeg', 0.7));
+                    renderThumbs(); updatePreview();
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    window.renderThumbs = () => {
+        document.getElementById('thumb-container').innerHTML = imageList.map((img, i) => `
+            <div class="thumb-wrapper">
+                <img src="${img}" class="thumb-item">
+                <div class="btn-remove-img" onclick="removeImage(${i})">×</div>
+            </div>`).join('');
+    };
+
+    window.removeImage = (i) => { imageList.splice(i, 1); renderThumbs(); updatePreview(); };
+
+    window.updatePreview = () => {
+        const name = document.getElementById('name').value || "ชื่อสินค้า";
+        const p = Number(document.getElementById('price').value) || 0;
+        const sp = Number(document.getElementById('salePrice').value) || 0;
+        const isS = document.getElementById('isSale').checked;
+        const sizesArr = document.getElementById('sizes').value.split(',').filter(s => s.trim() !== "");
+
+        document.getElementById('preview-name').innerText = name;
+        document.getElementById('badge-best').style.display = document.getElementById('isBestSeller').checked ? 'block' : 'none';
+        document.getElementById('preview-img-tag').src = imageList[0] || "https://via.placeholder.com/400x500?text=KNWT+Shop";
+        document.getElementById('img-count').innerText = `+${imageList.length - 1} images`;
+        document.getElementById('img-count').style.display = imageList.length > 1 ? 'block' : 'none';
+        
+        document.getElementById('price-area').innerHTML = (isS && sp > 0) 
+            ? `<span style="text-decoration:line-through;color:#999;font-size:14px;">฿${p.toLocaleString()}</span> <span style="color:var(--danger);font-weight:800;font-size:24px">฿${sp.toLocaleString()}</span>` 
+            : `<span style="color:var(--primary);font-weight:800;font-size:24px">฿${p.toLocaleString()}</span>`;
+        
+        document.getElementById('preview-desc').innerText = document.getElementById('desc').value || "รายละเอียดสินค้าจะแสดงตรงนี้...";
+        document.getElementById('preview-sizes-list').innerHTML = sizesArr.map(s => `<span style="border:1px solid #ddd; padding:2px 8px; border-radius:5px; font-size:11px;">${s.trim()}</span>`).join('');
+    };
+
+    window.handleSave = async () => {
+        const name = document.getElementById('name').value;
+        const price = document.getElementById('price').value;
+        if(!name || !price) return Swal.fire('แจ้งเตือน', 'กรุณากรอกชื่อและราคา', 'warning');
+
+        const btn = document.getElementById('main-btn');
+        btn.disabled = true; btn.innerText = "กำลังบันทึก...";
+
+        const payload = {
+            name, price: Number(price),
+            salePrice: Number(document.getElementById('salePrice').value) || 0,
+            isSale: document.getElementById('isSale').checked,
+            isBestSeller: document.getElementById('isBestSeller').checked,
+            stock: Number(document.getElementById('stock').value) || 0,
+            sold: Number(document.getElementById('sold').value) || 0,
+            description: document.getElementById('desc').value,
+            category: document.getElementById('category').value,
+            status: document.getElementById('status')?.value || 'active',
+            sizes: document.getElementById('sizes').value.split(',').map(s => ({size: s.trim(), price: Number(price)})).filter(s => s.size),
+            img: imageList[0] || "",
+            images: imageList,
+            updatedAt: Date.now()
+        };
+
+        try {
+            if(editDocId) await updateDoc(doc(db, "products", editDocId), payload);
+            else { payload.createdAt = Date.now(); await addDoc(collection(db, "products"), payload); }
+            Swal.fire('สำเร็จ', 'บันทึกข้อมูลเรียบร้อย', 'success');
+            resetForm();
+        } catch(e) { Swal.fire('Error', e.message, 'error'); }
+        finally { btn.disabled = false; btn.innerText = "บันทึกข้อมูลสินค้า"; }
+    };
+
+    window.editProduct = (id) => {
+        const p = productsLocal.find(i => i.id === id);
+        if(!p) return;
+        editDocId = id;
+        document.getElementById('name').value = p.name;
+        document.getElementById('price').value = p.price;
+        document.getElementById('salePrice').value = p.salePrice || '';
+        document.getElementById('isSale').checked = p.isSale || false;
+        document.getElementById('isBestSeller').checked = p.isBestSeller || false;
+        document.getElementById('stock').value = p.stock || 0;
+        document.getElementById('sold').value = p.sold || 0;
+        document.getElementById('desc').value = p.description || "";
+        document.getElementById('category').value = p.category || "Shirt";
+        document.getElementById('sizes').value = p.sizes ? p.sizes.map(s => s.size).join(', ') : '';
+        imageList = [...(p.images || [])];
+        renderThumbs();
+        document.getElementById('form-title').innerHTML = "<i class='fas fa-edit'></i> แก้ไขสินค้า";
+        document.getElementById('main-btn').innerText = "บันทึกการแก้ไข";
+        document.getElementById('cancel-btn').style.display = "inline-block";
+        updatePreview();
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    };
+
+    window.deleteProduct = async (id) => {
+        if(confirm("ต้องการลบสินค้านี้ใช่หรือไม่?")) await deleteDoc(doc(db, "products", id));
+    };
+
+    window.resetForm = () => {
+        editDocId = null; imageList = [];
+        document.querySelectorAll('input:not([type=checkbox]), textarea').forEach(i => i.value = '');
+        document.getElementById('isSale').checked = false; 
+        document.getElementById('isBestSeller').checked = false;
+        document.getElementById('thumb-container').innerHTML = '';
+        document.getElementById('form-title').innerHTML = "<i class='fas fa-plus-circle'></i> ข้อมูลสินค้า";
+        document.getElementById('main-btn').innerText = "บันทึกข้อมูลสินค้า";
+        document.getElementById('cancel-btn').style.display = "none";
+        updatePreview();
+    };
+
+    window.exportData = () => {
+        const data = JSON.stringify({products: productsLocal, exportDate: new Date()}, null, 2);
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(new Blob([data], {type: "application/json"}));
+        a.download = `KNWT_Data_${new Date().toLocaleDateString()}.json`; a.click();
+    };
+
+    // Authentication
+    const pass = prompt("Admin Password:");
+    if(pass === "1234") { 
+        document.body.style.display = "block"; 
+        listenProducts(); 
+        listenOrders(); // โหลดทั้งสองอย่างรอไว้เลย
+    } else { 
+        document.body.innerHTML = "<div style='text-align:center; margin-top:100px;'><h1>❌ Access Denied</h1></div>"; 
+        document.body.style.display = "block"; 
+    }
 </script>
-</script>
+
 </body>
 </html>
