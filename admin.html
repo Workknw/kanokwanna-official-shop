@@ -3,449 +3,600 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KNWT Management System | Admin Dashboard Pro </title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;600&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
+    <title>KNWT Management System | Admin Dashboard Pro</title>
+    
+    <!-- Fonts & Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
         :root {
-            --primary: #004d2a;
-            --accent: #006738;
-            --danger: #d32f2f;
-            --warning: #f57c00;
-            --bg: #f0f2f5;
-            --card: #ffffff;
-            --text: #1c1e21;
+            --ios-green-dark: #064e3b; /* เขียวเข้ม */
+            --ios-green-base: #10b981; /* เขียวหลัก */
+            --ios-green-pastel: #f0fdf4; /* เขียวพาสเทลพื้นหลัง */
+            --ios-bg: #ffffff;
         }
 
-        body {
-            font-family: 'Noto Sans Thai', sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0; padding: 40px 20px;
-            display: none; 
+        body { 
+            font-family: 'Inter', 'Noto Sans Thai', sans-serif; 
+            background-color: var(--ios-green-pastel); 
+            color: #1f2937;
         }
 
-        .admin-container {
-            background: var(--card);
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 12px 24px rgba(0,0,0,0.1);
-            display: flex; gap: 40px;
+        /* iOS Glassmorphism & Soft Shadows */
+        .ios-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
         }
 
-        .form-section { flex: 1.2; }
-        h2 { margin-top: 0; color: var(--primary); border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px; font-family: 'Plus Jakarta Sans', sans-serif; }
-
-        label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: var(--accent); }
-
-        input, select, textarea {
-            display:block; width:100%; margin-bottom:15px;
-            padding:12px; border-radius:8px; border:1px solid #ddd;
-            box-sizing: border-box; font-family: inherit; transition: 0.2s;
+        .sidebar-item {
+            margin: 4px 12px;
+            border-radius: 12px;
+            transition: all 0.2s ease;
         }
-        input[type="checkbox"] { display: inline-block; width: auto; margin-right: 8px; margin-bottom: 0; vertical-align: middle; }
-        .checkbox-group { background: #f9f9f9; padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #eee; }
 
-        textarea { resize: vertical; min-height: 80px; }
-        .file-input-wrapper { background: #fafafa; border: 2px dashed #ccc; padding: 20px; text-align: center; border-radius: 8px; margin-bottom: 15px; cursor: pointer; }
+        .sidebar-item:hover { background-color: rgba(16, 185, 129, 0.1); color: var(--ios-green-dark); }
+        .active-link { background-color: var(--ios-green-base) !important; color: white !important; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
         
-        .row { display: flex; gap: 10px; }
-        .row > div { flex: 1; }
-
-        .btn-group { display: flex; gap: 10px; margin-top: 10px; }
-        button {
-            flex: 1; padding: 12px; border: none; border-radius: 8px;
-            font-weight: bold; cursor: pointer; transition: 0.3s;
+        .ios-input {
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 12px 16px;
+            transition: all 0.2s;
         }
-        .btn-save { background: var(--primary); color: white; }
-        .btn-save:hover { background: var(--accent); }
-        .btn-cancel { background: #eee; color: #333; display: none; }
-        .btn-export { background: #555; color: white; margin-top: 20px; width: 100%; }
-
-        .preview-section { flex: 0.8; background: #fafafa; border: 2px dashed #ddd; border-radius: 12px; padding: 20px; text-align: center; position: sticky; top: 20px; height: fit-content; }
-        .preview-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); position: relative; text-align: left;}
-        .badge-best { position: absolute; top: 10px; right: 10px; background: #ffc107; color: #000; font-size: 10px; padding: 3px 8px; border-radius: 20px; font-weight: bold; z-index: 2;}
-        
-        .image-preview-container { width: 100%; height: 250px; background: #eee; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-        #preview-img-tag { width: 100%; height: 100%; object-fit: cover; }
-        .img-count-badge { position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; }
-
-        .list-section { max-width: 1100px; margin: 30px auto 0; }
-        .product-item {
-            background: white; padding: 15px 20px; margin-bottom: 10px; border-radius: 10px;
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        .ios-input:focus {
+            border-color: var(--ios-green-base);
+            ring: 4px rgba(16, 185, 129, 0.1);
+            outline: none;
         }
-        .item-btns button { padding: 5px 10px; font-size: 12px; margin-left: 5px; width: auto; flex: none; }
-        .btn-edit { background: #ffc107; color: black; }
-        .btn-delete { background: #ff4444; color: white; }
-        
-        /* Multi-image indicator */
-        .thumb-list { display: flex; gap: 5px; margin-top: 10px; flex-wrap: wrap; justify-content: center; }
-        .thumb-item { width: 40px; height: 40px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; }
+
+        .hidden { display: none !important; }
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
     </style>
 </head>
-<body>
+<body class="flex h-screen overflow-hidden">
 
-<div class="admin-container">
-    <div class="form-section">
-        <h2 id="form-title">📦 เพิ่มสินค้าใหม่ </h2>
-        
-        <label>ชื่อสินค้า</label>
-        <input id="name" placeholder="ชื่อสินค้า" oninput="updatePreview()">
-
-        <div class="row">
-            <div>
-                <label>ราคาเริ่มต้น (บาท)</label>
-                <input id="price" type="number" placeholder="เช่น 390" oninput="updatePreview()">
-            </div>
-            <div>
-                <label>ราคาลดพิเศษ (Sale Price)</label>
-                <input id="salePrice" type="number" placeholder="ถ้าไม่มีให้ว่างไว้" oninput="updatePreview()">
-            </div>
-        </div>
-
-        <div class="checkbox-group">
-            <label style="color:#333; margin-bottom:0; cursor:pointer;">
-                <input type="checkbox" id="isSale" onchange="updatePreview()"> 🔥 เปิดโหมดลดราคา (Sale)
-            </label>
-            <label style="color:#333; margin-bottom:0; cursor:pointer; margin-top:10px;">
-                <input type="checkbox" id="isBestSeller" onchange="updatePreview()"> ⭐ สินค้าขายดี (Best Seller)
-            </label>
-        </div>
-
-        <div class="row">
-            <div>
-                <label>สต็อก (Stock)</label>
-                <input id="stock" type="number" placeholder="0" oninput="updatePreview()">
-            </div>
-            <div>
-                <label>ยอดขาย (Sold)</label>
-                <input id="sold" type="number" placeholder="0" oninput="updatePreview()">
-            </div>
-        </div>
-
-        <label>รายละเอียดสินค้า</label>
-        <textarea id="desc" placeholder="บรรยายสรรพคุณ..." oninput="updatePreview()"></textarea>
-
-        <label>รูปภาพสินค้า (เลือกได้หลายรูปเพื่อทำ Slider)</label>
-        <input type="file" id="fileInput" accept="image/*" multiple onchange="handleImageUpload(event)">
-        <div id="thumb-container" class="thumb-list"></div>
-        
-        <div class="row" style="margin-top:15px;">
-            <div>
-                <label>หมวดหมู่</label>
-                <select id="category" onchange="updatePreview()">
-                    <option value="Shirt">เสื้อยูนิฟอร์ม (Shirt)</option>
-                    <option value="Pants">กางเกง (Pants)</option>
-                    <option value="General">อื่นๆ</option>
-                </select>
-            </div>
-            <div>
-                <label>สถานะสินค้า</label>
-                <select id="status" onchange="updatePreview()">
-                    <option value="active">เปิดการขาย (Active)</option>
-                    <option value="inactive">ซ่อนสินค้า (Hidden)</option>
-                </select>
-            </div>
-        </div>
-        
-        <label>ไซส์และราคา (รูปแบบ S:290, M:320, L:350)</label>
-        <input id="sizes" placeholder="ถ้าทุกไซส์ราคาเท่ากันใส่แค่ S, M, L" oninput="updatePreview()">
-
-        <div class="btn-group">
-            <button id="main-btn" class="btn-save" onclick="handleSave()">บันทึกข้อมูลสินค้า</button>
-            <button id="cancel-btn" class="btn-cancel" onclick="resetForm()">ยกเลิก</button>
-        </div>
-
-        <button class="btn-export" onclick="exportData()">📥 สำรองข้อมูล (Export JSON)</button>
-    </div>
-
-    <div class="preview-section">
-        <p style="font-size: 12px; color: #888; margin-bottom: 10px;">Live Preview (เวอร์ชันลูกค้าเห็น)</p>
-        <div class="preview-card">
-            <div id="badge-best" class="badge-best" style="display:none;">Best Seller</div>
-            <div class="image-preview-container">
-                <img id="preview-img-tag" src="https://via.placeholder.com/400x500?text=No+Image" alt="Preview">
-                <div id="img-count" class="img-count-badge" style="display:none;">+0 รูป</div>
-            </div>
-            <div style="padding: 15px;">
-                <p id="preview-name" style="margin:0; font-weight: 700; font-size: 18px;">ชื่อสินค้า</p>
-                <div id="price-area">
-                    <p style="margin:5px 0; color: var(--primary); font-weight: bold; font-size: 1.2em;">฿ 0</p>
-                </div>
-                <div style="display:flex; justify-content: space-between; font-size: 11px; color: #666; margin-top: 5px;">
-                    <span id="preview-stock">สต็อก: 0</span>
-                    <span id="preview-sold">ขายแล้ว: 0 ชิ้น</span>
-                </div>
-                <p id="preview-sizes-list" style="font-size: 11px; color: #888; margin-top: 8px; background: #f0f0f0; padding: 4px 8px; border-radius: 4px; display: inline-block;"></p>
-                <p id="preview-desc" style="font-size: 11px; color: #777; margin-top: 10px; line-height: 1.4; border-top: 1px solid #eee; padding-top: 8px;"></p>
-            </div>
+    <!-- 🔒 LOGIN OVERLAY (Apple Style) -->
+    <div id="login-overlay" class="fixed inset-0 bg-[#f0fdf4]/80 backdrop-blur-xl z-[9999] flex items-center justify-center">
+        <div class="ios-card p-10 w-[90%] max-w-md text-center border-none shadow-2xl">
+            <div class="w-20 h-20 bg-emerald-600 rounded-3xl flex items-center justify-center text-white text-4xl font-bold mx-auto mb-6 shadow-lg shadow-emerald-200">K</div>
+            <h2 class="text-2xl font-bold text-emerald-900 mb-1">KNW Admin Login</h2>
+            <p class="text-emerald-600/60 mb-8 text-sm font-medium">เข้าสู่ระบบจัดการ หจก. กนกวรรณ ทับทอง</p>
+            <input type="email" id="login-email" class="w-full ios-input mb-4" placeholder="อีเมล">
+            <input type="password" id="login-pass" class="w-full ios-input mb-8" placeholder="รหัสผ่าน">
+            <button onclick="handleLogin()" class="w-full bg-emerald-600 text-white font-bold py-4 rounded-2xl hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-200">เข้าสู่ระบบ</button>
         </div>
     </div>
-</div>
 
-<div class="list-section">
-    <h3>📋 รายการสินค้าทั้งหมด</h3>
-    <input id="searchBox" placeholder="🔍 ค้นหาชื่อสินค้า..." oninput="renderProducts()" style="margin-bottom: 20px;">
-    <div id="productList"></div>
-</div>
+    <!-- 1. SIDEBAR (White/Green iOS Style) -->
+    <aside class="w-64 bg-white border-r border-emerald-100 flex-shrink-0 hidden md:flex flex-col z-20">
+        <div class="p-8 flex items-center gap-3">
+            <div class="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white font-bold shadow-md">K</div>
+            <span class="font-bold text-xl tracking-tight text-emerald-900">KNWT Store</span>
+        </div>
+        <nav class="flex-1 overflow-y-auto py-2 custom-scroll">
+            <a href="javascript:void(0)" onclick="switchTab('dashboard')" id="tab-dashboard" class="sidebar-item active-link flex items-center px-4 py-3 text-emerald-700 font-semibold">
+                <i class="fas fa-chart-pie w-6"></i><span>Dashboard</span>
+            </a>
+            <a href="javascript:void(0)" onclick="switchTab('products')" id="tab-products" class="sidebar-item flex items-center px-4 py-3 text-gray-500 font-medium">
+                <i class="fas fa-app-store w-6"></i><span>คลังสินค้า</span>
+            </a>
+            <div class="mx-6 my-4 border-t border-emerald-50"></div>
+            <a href="#" class="sidebar-item flex items-center px-4 py-3 text-gray-500 font-medium">
+                <i class="fas fa-receipt w-6"></i><span>ออเดอร์</span>
+            </a>
+        </nav>
+        <div class="p-6 border-t border-emerald-50">
+            <button onclick="handleLogout()" class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-red-50 text-red-500 rounded-2xl hover:bg-red-100 transition-all font-bold text-sm">
+                <i class="fas fa-power-off text-xs"></i><span>Sign Out</span>
+            </button>
+        </div>
+    </aside>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 flex flex-col min-w-0 overflow-hidden">
+        
+        <!-- TOP NAVBAR (Blur Glass) -->
+        <header class="h-16 bg-white/70 backdrop-blur-md border-b border-emerald-100 flex items-center justify-between px-8 z-10">
+            <div class="relative w-72">
+                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                <input type="text" id="searchBox" oninput="renderProducts()" class="w-full pl-10 pr-4 py-2 bg-emerald-50/50 border-none rounded-full text-sm focus:ring-2 focus:ring-emerald-500/20 outline-none" placeholder="ค้นหาตามชื่อ...">
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="flex flex-col text-right">
+                    <span class="text-xs font-bold text-emerald-800">Admin Mode</span>
+                    <span class="text-[10px] text-emerald-500">Nakhon Sawan, TH</span>
+                </div>
+                <div class="w-8 h-8 rounded-full bg-emerald-100 border border-emerald-200 flex items-center justify-center text-emerald-600 font-bold">A</div>
+            </div>
+        </header>
 
-const firebaseConfig = {
-    apiKey: "AIzaSyDToPawKXOwr1zIoYuU-h8OvBrwwoM_pXE",
-    authDomain: "kanokwan-shop-edcf3.firebaseapp.com",
-    projectId: "kanokwan-shop-edcf3",
-    storageBucket: "kanokwan-shop-edcf3.firebasestorage.app",
-    messagingSenderId: "565108045695",
-    appId: "1:565108045695:web:7a16c9ee14f01d48f7cc4a"
-};
+        <!-- SCROLLABLE CONTAINER -->
+        <div class="flex-1 overflow-y-auto p-8 custom-scroll">
+            
+            <!-- SECTION: DASHBOARD -->
+            <div id="section-dashboard">
+                <div class="mb-8">
+                    <h1 class="text-3xl font-bold text-emerald-950 tracking-tight">ภาพรวมร้านค้า</h1>
+                    <p class="text-emerald-600/70 font-medium">ยินดีต้อนรับกลับครับ หจก. กนกวรรณ ทับทอง</p>
+                </div>
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-let editDocId = null;
-let imageList = []; // เก็บ Array ของรูปภาพ Base64
-let productsLocal = [];
-
-async function fetchProducts() {
-    productsLocal = [];
-    try {
-        const querySnapshot = await getDocs(collection(db, "products"));
-        querySnapshot.forEach((doc) => {
-            productsLocal.push({ id: doc.id, ...doc.data() });
-        });
-        renderProducts();
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-function renderProducts() {
-    const list = document.getElementById('productList');
-    const keyword = document.getElementById('searchBox').value.toLowerCase();
-    let filtered = productsLocal.filter(p => p.name.toLowerCase().includes(keyword));
-    
-    list.innerHTML = '';
-    [...filtered].reverse().forEach((p) => {
-        list.innerHTML += `
-            <div class="product-item">
-                <div style="display:flex; align-items:center; gap:15px;">
-                    <img src="${p.img || p.images?.[0] || ''}" style="width:50px; height:50px; object-fit:cover; border-radius:8px; background:#eee;">
-                    <div>
-                        <strong>${p.name}</strong> ${p.isBestSeller ? '⭐' : ''}
-                        <br><small>฿${p.price} | สต็อก: ${p.stock} | รูป: ${p.images?.length || 1}</small>
+                <!-- 📊 STAT CARDS -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="ios-card p-6 border-none">
+                        <p class="text-xs font-bold text-emerald-500 uppercase tracking-widest mb-1">สินค้าในระบบ</p>
+                        <h3 class="text-3xl font-bold text-emerald-950" id="stat-total">0</h3>
+                        <div class="mt-4 text-[10px] text-emerald-400 bg-emerald-50 w-max px-2 py-1 rounded-md">Updated Real-time</div>
+                    </div>
+                    <div class="ios-card p-6 border-none">
+                        <p class="text-xs font-bold text-orange-500 uppercase tracking-widest mb-1">สต็อกใกล้หมด</p>
+                        <h3 class="text-3xl font-bold text-orange-600" id="stat-low">0</h3>
+                        <p class="text-[10px] text-orange-400 mt-4">ควรเติมสินค้าด่วน</p>
+                    </div>
+                    <div class="ios-card p-6 border-none bg-emerald-600">
+                        <p class="text-xs font-bold text-emerald-100 uppercase tracking-widest mb-1">ยอดขายสะสม</p>
+                        <h3 class="text-3xl font-bold text-white" id="stat-sold">0</h3>
+                        <p class="text-[10px] text-emerald-200/60 mt-4">จากสินค้าทุกหมวดหมู่</p>
+                    </div>
+                    <div class="ios-card p-6 border-none">
+                        <p class="text-xs font-bold text-emerald-500 uppercase tracking-widest mb-1">BEST SELLER</p>
+                        <h3 class="text-3xl font-bold text-emerald-950" id="stat-bestseller">0</h3>
+                        <p class="text-[10px] text-emerald-400 mt-4">รายการยอดนิยม</p>
                     </div>
                 </div>
-                <div class="item-btns">
-                    <button class="btn-edit" onclick="editProduct('${p.id}')">แก้ไข</button>
-                    <button class="btn-delete" onclick="deleteProduct('${p.id}')">ลบ</button>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 ios-card p-8 border-none">
+                        <h3 class="text-lg font-bold text-emerald-950 mb-6 flex items-center gap-2">
+                            <span class="w-2 h-6 bg-emerald-500 rounded-full"></span> สถิติสินค้าแยกหมวดหมู่
+                        </h3>
+                        <div class="h-[320px]"><canvas id="categoryChart"></canvas></div>
+                    </div>
+                    <div class="ios-card p-8 border-none">
+                        <h3 class="text-lg font-bold text-emerald-950 mb-6">สินค้าล่าสุด</h3>
+                        <div id="recent-items" class="space-y-4">
+                            <!-- Items appear here -->
+                        </div>
+                    </div>
                 </div>
-            </div>`;
-    });
-}
+            </div>
 
-// Multi-Image Upload
-window.handleImageUpload = (event) => {
-    const files = event.target.files;
-    const thumbContainer = document.getElementById('thumb-container');
-    
-    if (files.length === 0) return;
-    
-    imageList = [];
-    thumbContainer.innerHTML = '';
+            <!-- SECTION: PRODUCTS MANAGEMENT -->
+            <div id="section-products" class="hidden">
+                <div class="flex items-center justify-between mb-8">
+                    <h2 class="text-2xl font-bold text-emerald-950" id="form-title">📦 จัดการสินค้า</h2>
+                    <button onclick="resetForm()" class="bg-emerald-600 text-white px-8 py-3 rounded-2xl text-sm font-bold shadow-lg shadow-emerald-200 hover:scale-105 transition-transform">
+                        <i class="fas fa-plus mr-2"></i>เพิ่มรายการใหม่
+                    </button>
+                </div>
 
-    Array.from(files).forEach(file => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const img = new Image();
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                let width = img.width;
-                let height = img.height;
+                <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
+                    <!-- Form Part -->
+                    <div class="xl:col-span-8 space-y-6">
+                        <div class="ios-card p-8 border-none shadow-xl">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="col-span-2">
+                                    <label class="block text-xs font-bold text-emerald-700/50 uppercase mb-2 ml-1">ชื่อสินค้า</label>
+                                    <input id="name" oninput="updatePreview()" class="w-full ios-input" placeholder="เช่น ชุดนักเรียนตรากนกวรรณ">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-emerald-700/50 uppercase mb-2 ml-1">ราคาปกติ</label>
+                                    <input id="price" type="number" oninput="updatePreview()" class="w-full ios-input" placeholder="0.00">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-emerald-700/50 uppercase mb-2 ml-1">ราคาโปรโมชั่น (ถ้ามี)</label>
+                                    <input id="salePrice" type="number" oninput="updatePreview()" class="w-full ios-input" placeholder="0.00">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-emerald-700/50 uppercase mb-2 ml-1">สต็อก (ชิ้น)</label>
+                                    <input id="stock" type="number" value="0" oninput="updatePreview()" class="w-full ios-input">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-emerald-700/50 uppercase mb-2 ml-1">หมวดหมู่สินค้า</label>
+                                    <select id="category" onchange="updatePreview()" class="w-full ios-input appearance-none">
+                                        <option value="Uniform">ชุดนักเรียน</option>
+                                        <option value="Corporate">ชุดหน่วยงาน</option>
+                                        <option value="General">สินค้าทั่วไป</option>
+                                    </select>
+                                </div>
+                                <div class="col-span-2 bg-emerald-50/50 p-6 rounded-2xl flex gap-8 border border-emerald-100">
+                                    <label class="flex items-center gap-3 cursor-pointer font-bold text-emerald-800 text-sm">
+                                        <input type="checkbox" id="isSale" onchange="updatePreview()" class="w-6 h-6 rounded-lg border-emerald-200 accent-emerald-600"> 🏷️ เปิดโปรโมชั่น
+                                    </label>
+                                    <label class="flex items-center gap-3 cursor-pointer font-bold text-emerald-800 text-sm">
+                                        <input type="checkbox" id="isBestSeller" onchange="updatePreview()" class="w-6 h-6 rounded-lg border-emerald-200 accent-emerald-600"> ⭐ สินค้าแนะนำ
+                                    </label>
+                                </div>
+                            </div>
 
-                // 1. ปรับขนาดรูปไม่ให้ใหญ่เกินไป (Max 800px)
-                const MAX_WIDTH = 800;
-                if (width > MAX_WIDTH) {
-                    height *= MAX_WIDTH / width;
-                    width = MAX_WIDTH;
-                }
+                            <div class="mt-8">
+                                <label class="block text-xs font-bold text-emerald-700/50 uppercase mb-2 ml-1">รูปภาพสินค้า</label>
+                                <div id="drop-zone" class="bg-emerald-50/30 border-2 border-dashed border-emerald-200 rounded-3xl p-10 text-center cursor-pointer hover:bg-emerald-50 hover:border-emerald-400 transition-all group">
+                                    <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm group-hover:scale-110 transition-transform">
+                                        <i class="fas fa-camera text-2xl text-emerald-500"></i>
+                                    </div>
+                                    <p class="text-sm font-bold text-emerald-800">เลือกรูปภาพสินค้า</p>
+                                    <p class="text-[11px] text-emerald-500 mt-1">แนะนำขนาด 1000x1250 px (แนวตั้ง)</p>
+                                    <input type="file" id="fileInput" accept="image/*" multiple class="hidden">
+                                </div>
+                                <div id="thumb-container" class="flex gap-4 mt-6 overflow-x-auto pb-2 custom-scroll"></div>
+                            </div>
 
-                canvas.width = width;
-                canvas.height = height;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, width, height);
+                            <div class="mt-10 flex gap-4">
+                                <button id="main-btn" onclick="handleSavePro()" class="flex-1 bg-emerald-600 text-white font-bold py-5 rounded-2xl shadow-xl shadow-emerald-200 hover:bg-emerald-700 active:scale-[0.98] transition-all">บันทึกข้อมูลเข้าคลัง</button>
+                                <button id="cancel-btn" onclick="resetForm()" class="hidden px-10 bg-gray-100 text-gray-500 font-bold py-5 rounded-2xl hover:bg-gray-200 transition-all">ยกเลิก</button>
+                            </div>
+                        </div>
+                    </div>
 
-                // 2. บีบอัดคุณภาพเหลือ 0.6 (60%) ช่วยลดขนาดไฟล์ได้เยอะมาก
-                const compressedBase64 = canvas.toDataURL('image/jpeg', 0.6);
-                
-                imageList.push(compressedBase64);
-                thumbContainer.innerHTML += `<img src="${compressedBase64}" class="thumb-item">`;
-                updatePreview();
-            };
-            img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    });
-};
+                    <!-- iOS Mockup Preview -->
+                    <div class="xl:col-span-4">
+                        <div class="sticky top-4 bg-white rounded-[45px] p-4 shadow-2xl border-[8px] border-emerald-950 h-[680px] w-full max-w-[320px] mx-auto overflow-hidden flex flex-col">
+                            <div class="w-32 h-6 bg-emerald-950 rounded-b-2xl mx-auto mb-4"></div>
+                            <div class="flex-1 overflow-y-auto custom-scroll px-2">
+                                <div class="relative aspect-[4/5] rounded-3xl overflow-hidden mb-4 bg-emerald-50 shadow-inner">
+                                    <img id="preview-img-tag" src="https://via.placeholder.com/400x500?text=KNW+Store" class="w-full h-full object-cover">
+                                    <div id="badge-best" class="hidden absolute top-3 right-3 bg-white/90 backdrop-blur text-emerald-600 text-[9px] font-black px-2 py-1 rounded-lg shadow-sm">BEST SELLER</div>
+                                </div>
+                                <h4 id="preview-name" class="text-lg font-black text-emerald-950 leading-tight mb-2">ชื่อสินค้าตัวอย่าง</h4>
+                                <div id="price-area" class="mb-4">
+                                    <span class="text-2xl font-black text-emerald-600">฿0</span>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2 mt-4">
+                                    <div class="bg-emerald-50 p-3 rounded-2xl text-center">
+                                        <p class="text-[9px] font-bold text-emerald-400 uppercase">Stock</p>
+                                        <p id="preview-stock" class="text-sm font-black text-emerald-800">0</p>
+                                    </div>
+                                    <div class="bg-emerald-50 p-3 rounded-2xl text-center">
+                                        <p class="text-[9px] font-bold text-emerald-400 uppercase">Category</p>
+                                        <p id="preview-cat" class="text-[10px] font-black text-emerald-800 truncate">General</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-window.updatePreview = () => {
-    const name = document.getElementById('name').value || "ชื่อสินค้า";
-    const price = Number(document.getElementById('price').value) || 0;
-    const salePrice = Number(document.getElementById('salePrice').value) || 0;
-    const isSale = document.getElementById('isSale').checked;
-    const isBest = document.getElementById('isBestSeller').checked;
-    const sizes = document.getElementById('sizes').value;
+                <!-- PRODUCT LIST -->
+                <div class="mt-12 ios-card border-none overflow-hidden mb-20 shadow-xl">
+                    <div class="p-8 border-b border-emerald-50 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-xl font-bold text-emerald-950">รายการสินค้าทั้งหมด</h3>
+                            <p id="item-count" class="text-sm font-medium text-emerald-500">0 รายการในคลัง</p>
+                        </div>
+                        <div id="bulk-bar" class="hidden items-center gap-3 bg-emerald-600 p-2 rounded-2xl">
+                            <span id="bulk-count" class="text-xs font-bold text-white px-3">เลือกอยู่ 0 รายการ</span>
+                            <button onclick="bulkStatus('active')" class="bg-white/20 text-white text-[10px] font-bold px-3 py-2 rounded-xl hover:bg-white/30 transition-colors">เปิดขาย</button>
+                            <button onclick="bulkDeletePro()" class="bg-red-500 text-white text-[10px] font-bold px-3 py-2 rounded-xl">ลบด่วน</button>
+                            <button onclick="clearSelection()" class="text-white/60 px-2"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-emerald-50/50 text-emerald-800 text-[11px] uppercase font-black tracking-widest">
+                                <tr>
+                                    <th class="px-8 py-5 w-10"></th>
+                                    <th class="px-8 py-5">สินค้า</th>
+                                    <th class="px-8 py-5">หมวด</th>
+                                    <th class="px-8 py-5">ราคา</th>
+                                    <th class="px-8 py-5">สต็อก</th>
+                                    <th class="px-8 py-5">สถานะ</th>
+                                    <th class="px-8 py-5 text-right">การจัดการ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productList" class="divide-y divide-emerald-50">
+                                <!-- Data rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 
-    document.getElementById('preview-name').innerText = name;
-    document.getElementById('badge-best').style.display = isBest ? 'block' : 'none';
-    
-    if(imageList.length > 0) {
-        document.getElementById('preview-img-tag').src = imageList[0];
-        const countBadge = document.getElementById('img-count');
-        if(imageList.length > 1) {
-            countBadge.innerText = `+${imageList.length - 1} รูป`;
-            countBadge.style.display = 'block';
-        } else {
-            countBadge.style.display = 'none';
-        }
-    }
+<script type="module">
+    // --- FIREBASE CONFIG (SAME AS PREVIOUS) ---
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, query, orderBy, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    const priceArea = document.getElementById('price-area');
-    if(isSale && salePrice > 0) {
-        priceArea.innerHTML = `<p style="margin:5px 0;"><span style="text-decoration:line-through; color:#999; font-size:14px;">฿${price}</span> <span style="color:red; font-weight:700; font-size:22px;">฿${salePrice}</span></p>`;
-    } else {
-        priceArea.innerHTML = `<p style="margin:5px 0; color:var(--primary); font-weight:700; font-size:22px;">฿${price}</p>`;
-    }
-
-    document.getElementById('preview-stock').innerText = `สต็อก: ${document.getElementById('stock').value || 0}`;
-    document.getElementById('preview-sold').innerText = `ขายแล้ว: ${document.getElementById('sold').value || 0}`;
-    document.getElementById('preview-desc').innerText = document.getElementById('desc').value;
-    document.getElementById('preview-sizes-list').innerText = sizes ? `ไซส์: ${sizes}` : "Free Size";
-};
-
-window.handleSave = async () => {
-    const name = document.getElementById('name').value;
-    const price = document.getElementById('price').value;
-    if (!name || !price) return alert("กรุณากรอกชื่อและราคา!");
-
-    // แปลงข้อความไซส์เป็น Array โครงสร้างเดียวกับหน้า Shop
-    const sizeRaw = document.getElementById('sizes').value;
-    const sizeData = sizeRaw.split(',').map(item => {
-        const parts = item.split(':');
-        const sName = parts[0].trim();
-        const sPrice = parts[1] ? Number(parts[1].trim()) : Number(price);
-        return { size: sName, price: sPrice };
-    }).filter(s => s.size !== "");
-
-    const payload = {
-        name: name,
-        price: Number(price),
-        salePrice: Number(document.getElementById('salePrice').value) || 0,
-        isSale: document.getElementById('isSale').checked,
-        isBestSeller: document.getElementById('isBestSeller').checked,
-        stock: Number(document.getElementById('stock').value) || 0,
-        sold: Number(document.getElementById('sold').value) || 0,
-        description: document.getElementById('desc').value,
-        category: document.getElementById('category').value,
-        status: document.getElementById('status').value,
-        sizes: sizeData.length > 0 ? sizeData : [{size: "Free Size", price: Number(price)}],
-        img: imageList[0] || "", // รูปหลัก
-        images: imageList, // รูปทั้งหมดสำหรับ Carousel
-        updatedAt: Date.now()
+    const firebaseConfig = {
+        apiKey: "AIzaSyDToPawKXOwr1zIoYuU-h8OvBrwwoM_pXE",
+        authDomain: "kanokwan-shop-edcf3.firebaseapp.com",
+        projectId: "kanokwan-shop-edcf3",
+        storageBucket: "kanokwan-shop-edcf3.firebasestorage.app",
+        messagingSenderId: "565108045695",
+        appId: "1:565108045695:web:7a16c9ee14f01d48f7cc4a"
     };
 
-    try {
-        if (editDocId) {
-            await updateDoc(doc(db, "products", editDocId), payload);
-            alert("อัปเดตเรียบร้อย!");
-        } else {
-            payload.createdAt = Date.now();
-            await addDoc(collection(db, "products"), payload);
-            alert("เพิ่มสินค้าใหม่แล้ว!");
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    let productsLocal = [];
+    let imageList = [];
+    let editDocId = null;
+    let selectedIds = new Set();
+    let myChart = null;
+
+    // --- AUTH LOGIC ---
+    window.handleLogin = async () => {
+        const email = document.getElementById('login-email').value;
+        const pass = document.getElementById('login-pass').value;
+        if(!email || !pass) return;
+        
+        try {
+            await signInWithEmailAndPassword(auth, email, pass);
+        } catch (e) {
+            Swal.fire({ icon: 'error', title: 'Login Failed', text: 'ข้อมูลไม่ถูกต้อง', confirmButtonColor: '#10b981' });
         }
-        resetForm();
-        await fetchProducts();
-    } catch (err) {
-        alert("Error: " + err.message);
+    };
+
+    window.handleLogout = () => {
+        signOut(auth);
+    };
+
+    onAuthStateChanged(auth, (user) => {
+        const overlay = document.getElementById('login-overlay');
+        if (user) {
+            overlay.classList.add('hidden');
+            listenProducts();
+        } else {
+            overlay.classList.remove('hidden');
+        }
+    });
+
+    // --- REALTIME DATA ---
+    function listenProducts() {
+        onSnapshot(query(collection(db, "products"), orderBy("updatedAt", "desc")), (snap) => {
+            productsLocal = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            updateStats();
+            renderProducts();
+            updateChart();
+            renderRecent();
+        });
     }
-};
 
-window.editProduct = (id) => {
-    const p = productsLocal.find(item => item.id === id);
-    if(!p) return;
-    editDocId = id;
-    document.getElementById('name').value = p.name;
-    document.getElementById('price').value = p.price;
-    document.getElementById('salePrice').value = p.salePrice || "";
-    document.getElementById('isSale').checked = p.isSale || false;
-    document.getElementById('isBestSeller').checked = p.isBestSeller || false;
-    document.getElementById('stock').value = p.stock || 0;
-    document.getElementById('sold').value = p.sold || 0;
-    document.getElementById('desc').value = p.description || "";
-    document.getElementById('category').value = p.category || "Shirt";
-    document.getElementById('status').value = p.status || "active";
-    
-    // โหลดรูปภาพ
-    imageList = p.images || (p.img ? [p.img] : []);
-    const thumbContainer = document.getElementById('thumb-container');
-    thumbContainer.innerHTML = imageList.map(img => `<img src="${img}" class="thumb-item">`).join('');
-
-    // โหลดไซส์
-    document.getElementById('sizes').value = p.sizes ? p.sizes.map(s => `${s.size}:${s.price}`).join(', ') : "";
-
-    document.getElementById('form-title').innerText = "✏️ แก้ไขสินค้า";
-    document.getElementById('main-btn').innerText = "ยืนยันการแก้ไข";
-    document.getElementById('cancel-btn').style.display = "inline-block";
-    updatePreview();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-};
-
-window.deleteProduct = async (id) => {
-    if(confirm("ลบสินค้านี้ใช่ไหม?")) {
-        await deleteDoc(doc(db, "products", id));
-        fetchProducts();
+    function updateStats() {
+        document.getElementById('stat-total').innerText = productsLocal.length;
+        document.getElementById('stat-low').innerText = productsLocal.filter(p => p.stock < 5).length;
+        document.getElementById('stat-sold').innerText = productsLocal.reduce((acc, p) => acc + (Number(p.sold) || 0), 0);
+        document.getElementById('stat-bestseller').innerText = productsLocal.filter(p => p.isBestSeller).length;
     }
-};
 
-window.resetForm = () => {
-    editDocId = null; imageList = [];
-    document.querySelectorAll('input:not([type=checkbox]), textarea, select').forEach(i => i.value = '');
-    document.getElementById('isSale').checked = false;
-    document.getElementById('isBestSeller').checked = false;
-    document.getElementById('thumb-container').innerHTML = '';
-    document.getElementById('form-title').innerText = "📦 เพิ่มสินค้าใหม่";
-    document.getElementById('main-btn').innerText = "บันทึกข้อมูลสินค้า";
-    document.getElementById('cancel-btn').style.display = "none";
-    document.getElementById('preview-img-tag').src = "https://via.placeholder.com/400x500?text=No+Image";
-    updatePreview();
-};
+    function renderRecent() {
+        const container = document.getElementById('recent-items');
+        container.innerHTML = productsLocal.slice(0, 5).map(p => `
+            <div class="flex items-center gap-4 p-3 hover:bg-emerald-50 rounded-2xl transition-colors">
+                <img src="${p.img || 'https://via.placeholder.com/50'}" class="w-12 h-12 rounded-xl object-cover border border-emerald-100">
+                <div class="flex-1">
+                    <p class="text-sm font-bold text-emerald-950 line-clamp-1">${p.name}</p>
+                    <p class="text-[10px] text-emerald-500 font-medium">${p.category}</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm font-black text-emerald-600">฿${p.price}</p>
+                </div>
+            </div>
+        `).join('');
+    }
 
-window.exportData = () => {
-    const data = JSON.stringify(productsLocal, null, 2);
-    const blob = new Blob([data], {type: "application/json"});
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = `backup_${Date.now()}.json`;
-    a.click();
-};
+    window.renderProducts = () => {
+        const list = document.getElementById('productList');
+        const keyword = document.getElementById('searchBox').value.toLowerCase();
+        const filtered = productsLocal.filter(p => p.name.toLowerCase().includes(keyword));
+        
+        document.getElementById('item-count').innerText = `${filtered.length} รายการในคลัง`;
+        list.innerHTML = filtered.map(p => {
+            const isChecked = selectedIds.has(p.id) ? 'checked' : '';
+            return `
+                <tr class="hover:bg-emerald-50/30 transition-colors">
+                    <td class="px-8 py-5"><input type="checkbox" onchange="toggleSelect('${p.id}')" ${isChecked} class="w-5 h-5 rounded-lg border-emerald-200 accent-emerald-600"></td>
+                    <td class="px-8 py-5">
+                        <div class="flex items-center gap-4">
+                            <img src="${p.img || 'https://via.placeholder.com/50'}" class="w-14 h-14 rounded-2xl object-cover border border-emerald-100 shadow-sm">
+                            <div>
+                                <div class="font-black text-emerald-950 text-sm">${p.name}</div>
+                                <div class="text-[10px] text-emerald-400 font-bold uppercase tracking-tighter">${p.id.slice(0,8)}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-8 py-5 text-xs font-bold text-emerald-600">${p.category || 'ทั่วไป'}</td>
+                    <td class="px-8 py-5">
+                        <div class="text-sm font-black text-emerald-950">฿${Number(p.price).toLocaleString()}</div>
+                    </td>
+                    <td class="px-8 py-5">
+                        <span class="px-3 py-1 rounded-lg text-xs font-black ${p.stock < 5 ? 'bg-orange-100 text-orange-600' : 'bg-emerald-100 text-emerald-700'}">${p.stock}</span>
+                    </td>
+                    <td class="px-8 py-5">
+                        <span class="w-2 h-2 inline-block rounded-full mr-2 ${p.status === 'active' ? 'bg-emerald-500 animate-pulse' : 'bg-gray-300'}"></span>
+                        <span class="text-[10px] font-black uppercase text-gray-400">${p.status}</span>
+                    </td>
+                    <td class="px-8 py-5 text-right">
+                        <button onclick="editProduct('${p.id}')" class="p-2 text-emerald-600 hover:bg-white rounded-xl shadow-sm border border-emerald-50"><i class="fas fa-pencil-alt"></i></button>
+                        <button onclick="deleteProductPro('${p.id}')" class="p-2 text-red-400 hover:bg-white rounded-xl shadow-sm border border-emerald-50 ml-2"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    };
 
-const pass = prompt("Admin Password:");
-if(pass === "1234") {
-    document.body.style.display = "block";
-    fetchProducts();
-} else {
-    document.body.innerHTML = "<h1>Access Denied</h1>";
-    document.body.style.display = "block";
-}
+    // --- ACTIONS ---
+    window.handleSavePro = async () => {
+        const name = document.getElementById('name').value;
+        const price = Number(document.getElementById('price').value);
+        if(!name || price <= 0) return Swal.fire({ icon: 'warning', title: 'ข้อมูลไม่ครบ', text: 'ระบุชื่อและราคาสินค้า', confirmButtonColor: '#10b981' });
+
+        const payload = {
+            name, price,
+            salePrice: Number(document.getElementById('salePrice').value) || 0,
+            isSale: document.getElementById('isSale').checked,
+            isBestSeller: document.getElementById('isBestSeller').checked,
+            stock: Number(document.getElementById('stock').value) || 0,
+            category: document.getElementById('category').value,
+            status: 'active',
+            img: imageList[0] || "",
+            images: imageList,
+            updatedAt: Date.now()
+        };
+
+        try {
+            if (editDocId) await updateDoc(doc(db, "products", editDocId), payload);
+            else await addDoc(collection(db, "products"), { ...payload, createdAt: Date.now() });
+            resetForm();
+            Swal.fire({ icon: 'success', title: 'สำเร็จ', showConfirmButton: false, timer: 1000 });
+        } catch (e) { console.error(e); }
+    };
+
+    window.editProduct = (id) => {
+        const p = productsLocal.find(i => i.id === id);
+        editDocId = id;
+        document.getElementById('name').value = p.name;
+        document.getElementById('price').value = p.price;
+        document.getElementById('salePrice').value = p.salePrice;
+        document.getElementById('isSale').checked = p.isSale;
+        document.getElementById('isBestSeller').checked = p.isBestSeller;
+        document.getElementById('stock').value = p.stock;
+        document.getElementById('category').value = p.category;
+        imageList = [...(p.images || [])];
+        renderThumbs(); updatePreview();
+        switchTab('products');
+        document.getElementById('form-title').innerText = "✏️ แก้ไขข้อมูลสินค้า";
+        document.getElementById('main-btn').innerText = "ยืนยันการแก้ไข";
+        document.getElementById('cancel-btn').classList.remove('hidden');
+    };
+
+    window.deleteProductPro = async (id) => {
+        const res = await Swal.fire({ title: 'ลบสินค้านี้?', text: "ไม่สามารถกู้ข้อมูลได้", icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444' });
+        if (res.isConfirmed) await deleteDoc(doc(db, "products", id));
+    };
+
+    // --- UI HELPERS ---
+    window.switchTab = (tab) => {
+        document.getElementById('section-dashboard').classList.toggle('hidden', tab !== 'dashboard');
+        document.getElementById('section-products').classList.toggle('hidden', tab !== 'products');
+        document.getElementById('tab-dashboard').classList.toggle('active-link', tab === 'dashboard');
+        document.getElementById('tab-products').classList.toggle('active-link', tab === 'products');
+    };
+
+    window.updatePreview = () => {
+        document.getElementById('preview-name').innerText = document.getElementById('name').value || "ชื่อสินค้าตัวอย่าง";
+        const price = Number(document.getElementById('price').value) || 0;
+        const isSale = document.getElementById('isSale').checked;
+        const sPrice = Number(document.getElementById('salePrice').value) || 0;
+        document.getElementById('preview-stock').innerText = document.getElementById('stock').value;
+        document.getElementById('preview-cat').innerText = document.getElementById('category').value;
+        document.getElementById('badge-best').classList.toggle('hidden', !document.getElementById('isBestSeller').checked);
+        document.getElementById('preview-img-tag').src = imageList[0] || "https://via.placeholder.com/400x500?text=KNW+Store";
+        
+        document.getElementById('price-area').innerHTML = isSale && sPrice > 0
+            ? `<span class="text-xs text-gray-400 line-through">฿${price}</span> <span class="text-2xl font-black text-red-500">฿${sPrice}</span>`
+            : `<span class="text-2xl font-black text-emerald-600">฿${price}</span>`;
+    };
+
+    window.resetForm = () => {
+        editDocId = null; imageList = [];
+        document.querySelectorAll('input:not([type=checkbox]), select').forEach(i => i.value = (i.type === 'number' ? '0' : ''));
+        document.getElementById('isSale').checked = false; document.getElementById('isBestSeller').checked = false;
+        document.getElementById('form-title').innerText = "📦 เพิ่มสินค้าใหม่";
+        document.getElementById('main-btn').innerText = "บันทึกข้อมูลเข้าคลัง";
+        document.getElementById('cancel-btn').classList.add('hidden');
+        renderThumbs(); updatePreview();
+    };
+
+    // --- IMAGES ---
+    const dropZone = document.getElementById('drop-zone');
+    dropZone.onclick = () => document.getElementById('fileInput').click();
+    document.getElementById('fileInput').onchange = (e) => handleFiles(e.target.files);
+
+    function handleFiles(files) {
+        Array.from(files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    let w = img.width, h = img.height;
+                    if (w > 1000) { h *= 1000/w; w = 1000; }
+                    canvas.width = w; canvas.height = h;
+                    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                    imageList.push(canvas.toDataURL('image/jpeg', 0.8));
+                    renderThumbs(); updatePreview();
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function renderThumbs() {
+        document.getElementById('thumb-container').innerHTML = imageList.map((img, i) => `
+            <div class="relative w-20 h-24 flex-shrink-0 group">
+                <img src="${img}" class="w-full h-full object-cover rounded-2xl border border-emerald-100 shadow-sm">
+                <div onclick="removeImage(${i})" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-[10px] cursor-pointer shadow-md">×</div>
+            </div>
+        `).join('');
+    }
+
+    window.removeImage = (i) => { imageList.splice(i, 1); renderThumbs(); updatePreview(); };
+
+    function updateChart() {
+        const ctx = document.getElementById('categoryChart').getContext('2d');
+        const cats = {};
+        productsLocal.forEach(p => { cats[p.category] = (cats[p.category] || 0) + Number(p.stock); });
+        
+        if (myChart) myChart.destroy();
+        myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(cats),
+                datasets: [{
+                    label: 'Stock',
+                    data: Object.values(cats),
+                    backgroundColor: '#10b981',
+                    borderRadius: 12,
+                    barThickness: 40
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true, grid: { display: false } }, x: { grid: { display: false } } }
+            }
+        });
+    }
+
+    // --- BULK ---
+    window.toggleSelect = (id) => { selectedIds.has(id) ? selectedIds.delete(id) : selectedIds.add(id); updateBulkBar(); };
+    function updateBulkBar() {
+        const bar = document.getElementById('bulk-bar');
+        bar.classList.toggle('hidden', selectedIds.size === 0);
+        bar.classList.toggle('flex', selectedIds.size > 0);
+        document.getElementById('bulk-count').innerText = `เลือกอยู่ ${selectedIds.size} รายการ`;
+    }
+    window.clearSelection = () => { selectedIds.clear(); updateBulkBar(); renderProducts(); };
+    window.bulkStatus = async (s) => {
+        const batch = writeBatch(db);
+        selectedIds.forEach(id => batch.update(doc(db, "products", id), {status: s, updatedAt: Date.now()}));
+        await batch.commit(); clearSelection();
+    };
+    window.bulkDeletePro = async () => {
+        const res = await Swal.fire({ title: 'ลบรายการที่เลือก?', icon: 'warning', showCancelButton: true });
+        if (res.isConfirmed) {
+            const batch = writeBatch(db);
+            selectedIds.forEach(id => batch.delete(doc(db, "products", id)));
+            await batch.commit(); clearSelection();
+        }
+    };
 </script>
 </body>
 </html>
