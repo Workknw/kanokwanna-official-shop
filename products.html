@@ -474,15 +474,15 @@
             category: document.getElementById('category').value,
             status: document.getElementById('status')?.value || 'active',
             sizes: document.getElementById('sizes').value
-  .split(',')
-  .map(s => {
-    const [size, price] = s.split(':');
-    return {
-      size: size.trim(),
-      price: Number(price) || 0
-    };
-  })
-  .filter(s => s.size)
+              .split(',')
+              .map(s => {
+                const [size, price] = s.split(':');
+                return {
+                  size: size.trim(),
+                  price: Number(price) || 0
+                };
+              })
+              .filter(s => s.size),
             img: imageList[0] || "",
             images: imageList,
             updatedAt: Date.now()
