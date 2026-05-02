@@ -520,7 +520,7 @@
             let msg = `🧾 *ORDER ID: KNW-${Math.floor(10000 + Math.random() * 90000)}*\n🌟 *KANOKWAN OFFICIAL*\n--------------------------\n`;
             cart.forEach((item, i) => msg += `${i+1}. ${item.name} (x${item.qty}) ไซส์: ${item.size}\n`);
             msg += `--------------------------\n💰 ยอดรวม: ${document.getElementById('cartTotal').innerText} บาท\n👤 ผู้รับ: ${name}\n📞 โทร: ${phone}\n📍 ที่อยู่: ${addr}`;
-            window.location.href = `https://line.me/R/ti/p/@knwtt?text=${encodeURIComponent(msg)}`;
+            window.location.href = `https://line.me/R/ti/p/@800gljgf?text=${encodeURIComponent(msg)}`;
             cart = []; saveCart(); toggleCart();
         }
     </script>
