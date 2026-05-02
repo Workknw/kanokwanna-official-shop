@@ -147,6 +147,60 @@
             .search-input { display: none; }
             .cart-panel { width: 100%; }
         }
+        /* Carousel Styles ภายใน Card */
+.img-carousel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+.carousel-track {
+    display: flex;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    height: 100%;
+}
+.carousel-track img {
+    min-width: 100%;
+    object-fit: cover;
+}
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.7);
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 5;
+    font-size: 18px;
+    cursor: pointer;
+}
+.prev-btn { left: 10px; }
+.next-btn { right: 10px; }
+
+.carousel-dots {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+    z-index: 5;
+}
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.4);
+    cursor: pointer;
+    transition: 0.3s;
+}
+.dot.active {
+    background: var(--white);
+    transform: scale(1.3);
+}
     </style>
 </head>
 <body>
