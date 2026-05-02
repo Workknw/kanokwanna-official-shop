@@ -1,99 +1,94 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KNWT Management System | Admin Dashboard Pro </title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KNWT Management System | Admin Dashboard Pro </title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;600&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
 
-<style>
-/* CSS คงเดิมทั้งหมด */
-:root {
-    --primary: #004d2a;
-    --accent: #006738;
-    --danger: #d32f2f;
-    --warning: #f57c00;
-    --bg: #f0f2f5;
-    --card: #ffffff;
-    --text: #1c1e21;
-}
+    <style>
+        :root {
+            --primary: #004d2a;
+            --accent: #006738;
+            --danger: #d32f2f;
+            --warning: #f57c00;
+            --bg: #f0f2f5;
+            --card: #ffffff;
+            --text: #1c1e21;
+        }
 
-body {
-    font-family: 'Noto Sans Thai', sans-serif;
-    background-color: var(--bg);
-    color: var(--text);
-    margin: 0; padding: 40px 20px;
-    display: none; 
-}
+        body {
+            font-family: 'Noto Sans Thai', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0; padding: 40px 20px;
+            display: none; 
+        }
 
-.admin-container {
-    background: var(--card);
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 40px;
-    border-radius: 16px;
-    box-shadow: 0 12px 24px rgba(0,0,0,0.1);
-    display: flex; gap: 40px;
-}
+        .admin-container {
+            background: var(--card);
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+            display: flex; gap: 40px;
+        }
 
-.form-section { flex: 1.2; }
-h2 { margin-top: 0; color: var(--primary); border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
+        .form-section { flex: 1.2; }
+        h2 { margin-top: 0; color: var(--primary); border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px; font-family: 'Plus Jakarta Sans', sans-serif; }
 
-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: var(--accent); }
+        label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: var(--accent); }
 
-input, select, textarea {
-    display:block; width:100%; margin-bottom:15px;
-    padding:12px; border-radius:8px; border:1px solid #ddd;
-    box-sizing: border-box; font-family: inherit; transition: 0.2s;
-}
-input[type="checkbox"] { display: inline-block; width: auto; margin-right: 8px; margin-bottom: 0; vertical-align: middle; }
-.checkbox-group { background: #f9f9f9; padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #eee; }
+        input, select, textarea {
+            display:block; width:100%; margin-bottom:15px;
+            padding:12px; border-radius:8px; border:1px solid #ddd;
+            box-sizing: border-box; font-family: inherit; transition: 0.2s;
+        }
+        input[type="checkbox"] { display: inline-block; width: auto; margin-right: 8px; margin-bottom: 0; vertical-align: middle; }
+        .checkbox-group { background: #f9f9f9; padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #eee; }
 
-textarea { resize: vertical; min-height: 80px; }
-input[type="file"] { padding: 8px; background: #fafafa; border: 1px dashed #ccc; cursor: pointer; }
+        textarea { resize: vertical; min-height: 80px; }
+        .file-input-wrapper { background: #fafafa; border: 2px dashed #ccc; padding: 20px; text-align: center; border-radius: 8px; margin-bottom: 15px; cursor: pointer; }
+        
+        .row { display: flex; gap: 10px; }
+        .row > div { flex: 1; }
 
-.row { display: flex; gap: 10px; }
-.row > div { flex: 1; }
+        .btn-group { display: flex; gap: 10px; margin-top: 10px; }
+        button {
+            flex: 1; padding: 12px; border: none; border-radius: 8px;
+            font-weight: bold; cursor: pointer; transition: 0.3s;
+        }
+        .btn-save { background: var(--primary); color: white; }
+        .btn-save:hover { background: var(--accent); }
+        .btn-cancel { background: #eee; color: #333; display: none; }
+        .btn-export { background: #555; color: white; margin-top: 20px; width: 100%; }
 
-.btn-group { display: flex; gap: 10px; margin-top: 10px; }
-button {
-    flex: 1; padding: 12px; border: none; border-radius: 8px;
-    font-weight: bold; cursor: pointer; transition: 0.3s;
-}
-.btn-save { background: var(--primary); color: white; }
-.btn-save:hover { background: var(--accent); }
-.btn-cancel { background: #eee; color: #333; display: none; }
-.btn-export { background: #555; color: white; margin-top: 20px; width: 100%; }
+        .preview-section { flex: 0.8; background: #fafafa; border: 2px dashed #ddd; border-radius: 12px; padding: 20px; text-align: center; position: sticky; top: 20px; height: fit-content; }
+        .preview-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); position: relative; text-align: left;}
+        .badge-best { position: absolute; top: 10px; right: 10px; background: #ffc107; color: #000; font-size: 10px; padding: 3px 8px; border-radius: 20px; font-weight: bold; z-index: 2;}
+        
+        .image-preview-container { width: 100%; height: 250px; background: #eee; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        #preview-img-tag { width: 100%; height: 100%; object-fit: cover; }
+        .img-count-badge { position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; }
 
-.preview-section { flex: 0.8; background: #fafafa; border: 2px dashed #ddd; border-radius: 12px; padding: 20px; text-align: center; position: sticky; top: 20px; height: fit-content; }
-.preview-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); position: relative; }
-.badge-best { position: absolute; top: 10px; right: 10px; background: #ffc107; color: #000; font-size: 10px; padding: 3px 8px; border-radius: 20px; font-weight: bold; }
-#preview-img-tag { width: 100%; height: 220px; object-fit: cover; background: #eee; }
-
-.list-section { max-width: 1100px; margin: 30px auto 0; }
-.product-item {
-    background: white; padding: 15px 20px; margin-bottom: 10px; border-radius: 10px;
-    display: flex; justify-content: space-between; align-items: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-}
-.status-badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; color: white; margin-left: 5px; }
-.status-active { background: #4caf50; }
-.status-inactive { background: #9e9e9e; }
-.sale-label { color: var(--danger); font-weight: bold; font-size: 0.9em; }
-
-@media (max-width: 768px) {
-    .admin-container { flex-direction: column; }
-    .preview-section { order: -1; position: static; }
-}
-
-/* ตกแต่งปุ่มในรายการสินค้า */
-.item-btns button { padding: 5px 10px; font-size: 12px; margin-left: 5px; width: auto; flex: none; }
-.btn-edit { background: #ffc107; color: black; }
-.btn-delete { background: #ff4444; color: white; }
-</style>
+        .list-section { max-width: 1100px; margin: 30px auto 0; }
+        .product-item {
+            background: white; padding: 15px 20px; margin-bottom: 10px; border-radius: 10px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .item-btns button { padding: 5px 10px; font-size: 12px; margin-left: 5px; width: auto; flex: none; }
+        .btn-edit { background: #ffc107; color: black; }
+        .btn-delete { background: #ff4444; color: white; }
+        
+        /* Multi-image indicator */
+        .thumb-list { display: flex; gap: 5px; margin-top: 10px; flex-wrap: wrap; justify-content: center; }
+        .thumb-item { width: 40px; height: 40px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; }
+    </style>
 </head>
 <body>
 
@@ -106,12 +101,12 @@ button {
 
         <div class="row">
             <div>
-                <label>ราคาปกติ (บาท)</label>
+                <label>ราคาเริ่มต้น (บาท)</label>
                 <input id="price" type="number" placeholder="เช่น 390" oninput="updatePreview()">
             </div>
             <div>
-                <label>ราคาลดพิเศษ (ถ้ามี)</label>
-                <input id="salePrice" type="number" placeholder="เช่น 290" oninput="updatePreview()">
+                <label>ราคาลดพิเศษ (Sale Price)</label>
+                <input id="salePrice" type="number" placeholder="ถ้าไม่มีให้ว่างไว้" oninput="updatePreview()">
             </div>
         </div>
 
@@ -126,11 +121,11 @@ button {
 
         <div class="row">
             <div>
-                <label>จำนวนสต็อก (Stock)</label>
+                <label>สต็อก (Stock)</label>
                 <input id="stock" type="number" placeholder="0" oninput="updatePreview()">
             </div>
             <div>
-                <label>ขายไปแล้ว (Sold)</label>
+                <label>ยอดขาย (Sold)</label>
                 <input id="sold" type="number" placeholder="0" oninput="updatePreview()">
             </div>
         </div>
@@ -138,12 +133,13 @@ button {
         <label>รายละเอียดสินค้า</label>
         <textarea id="desc" placeholder="บรรยายสรรพคุณ..." oninput="updatePreview()"></textarea>
 
-        <label>รูปภาพสินค้า (จำกัด 2MB)</label>
-        <input type="file" id="fileInput" accept="image/*" onchange="handleImageUpload(event)">
+        <label>รูปภาพสินค้า (เลือกได้หลายรูปเพื่อทำ Slider)</label>
+        <input type="file" id="fileInput" accept="image/*" multiple onchange="handleImageUpload(event)">
+        <div id="thumb-container" class="thumb-list"></div>
         
-        <div class="row">
+        <div class="row" style="margin-top:15px;">
             <div>
-                <label>หมวดหมู่ (เพื่อให้ Filter ใน Shop ทำงาน)</label>
+                <label>หมวดหมู่</label>
                 <select id="category" onchange="updatePreview()">
                     <option value="Shirt">เสื้อยูนิฟอร์ม (Shirt)</option>
                     <option value="Pants">กางเกง (Pants)</option>
@@ -159,8 +155,8 @@ button {
             </div>
         </div>
         
-        <label>ไซส์และราคา (รูปแบบ S:290, M:320 หรือระบุแค่ไซส์ S, M, L)</label>
-        <input id="sizes" placeholder="เช่น S:290, M:320, L:350" oninput="updatePreview()">
+        <label>ไซส์และราคา (รูปแบบ S:290, M:320, L:350)</label>
+        <input id="sizes" placeholder="ถ้าทุกไซส์ราคาเท่ากันใส่แค่ S, M, L" oninput="updatePreview()">
 
         <div class="btn-group">
             <button id="main-btn" class="btn-save" onclick="handleSave()">บันทึกข้อมูลสินค้า</button>
@@ -174,21 +170,21 @@ button {
         <p style="font-size: 12px; color: #888; margin-bottom: 10px;">Live Preview (เวอร์ชันลูกค้าเห็น)</p>
         <div class="preview-card">
             <div id="badge-best" class="badge-best" style="display:none;">Best Seller</div>
-            <img id="preview-img-tag" src="https://via.placeholder.com/300x200?text=No+Image" alt="Preview">
-            <div style="padding: 15px; text-align: left;">
-                <p id="preview-name" style="margin:0; font-weight: 600;">ชื่อสินค้า</p>
-                
+            <div class="image-preview-container">
+                <img id="preview-img-tag" src="https://via.placeholder.com/400x500?text=No+Image" alt="Preview">
+                <div id="img-count" class="img-count-badge" style="display:none;">+0 รูป</div>
+            </div>
+            <div style="padding: 15px;">
+                <p id="preview-name" style="margin:0; font-weight: 700; font-size: 18px;">ชื่อสินค้า</p>
                 <div id="price-area">
-                    <p id="preview-price" style="margin:5px 0; color: var(--accent); font-weight: bold; font-size: 1.2em;">฿ 0</p>
+                    <p style="margin:5px 0; color: var(--primary); font-weight: bold; font-size: 1.2em;">฿ 0</p>
                 </div>
-
                 <div style="display:flex; justify-content: space-between; font-size: 11px; color: #666; margin-top: 5px;">
                     <span id="preview-stock">สต็อก: 0</span>
                     <span id="preview-sold">ขายแล้ว: 0 ชิ้น</span>
                 </div>
-                
-                <p id="preview-sizes-list" style="font-size: 10px; color: #888; margin-top: 5px;"></p>
-                <p id="preview-desc" style="font-size: 11px; color: #666; margin-top: 8px; border-top: 1px solid #eee; padding-top: 5px;"></p>
+                <p id="preview-sizes-list" style="font-size: 11px; color: #888; margin-top: 8px; background: #f0f0f0; padding: 4px 8px; border-radius: 4px; display: inline-block;"></p>
+                <p id="preview-desc" style="font-size: 11px; color: #777; margin-top: 10px; line-height: 1.4; border-top: 1px solid #eee; padding-top: 8px;"></p>
             </div>
         </div>
     </div>
@@ -196,9 +192,7 @@ button {
 
 <div class="list-section">
     <h3>📋 รายการสินค้าทั้งหมด</h3>
-    <div class="search-bar">
-        <input id="searchBox" placeholder="🔍 ค้นหาชื่อสินค้า หรือหมวดหมู่..." oninput="renderProducts()" style="margin-bottom: 20px; padding:12px; width:100%; border-radius:8px; border:1px solid #ddd;">
-    </div>
+    <input id="searchBox" placeholder="🔍 ค้นหาชื่อสินค้า..." oninput="renderProducts()" style="margin-bottom: 20px;">
     <div id="productList"></div>
 </div>
 
@@ -207,23 +201,21 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDToPawKXOwr1zIoYuU-h8OvBrwwoM_pXE",
-  authDomain: "kanokwan-shop-edcf3.firebaseapp.com",
-  projectId: "kanokwan-shop-edcf3",
-  storageBucket: "kanokwan-shop-edcf3.firebasestorage.app",
-  messagingSenderId: "565108045695",
-  appId: "1:565108045695:web:7a16c9ee14f01d48f7cc4a"
+    apiKey: "AIzaSyDToPawKXOwr1zIoYuU-h8OvBrwwoM_pXE",
+    authDomain: "kanokwan-shop-edcf3.firebaseapp.com",
+    projectId: "kanokwan-shop-edcf3",
+    storageBucket: "kanokwan-shop-edcf3.firebasestorage.app",
+    messagingSenderId: "565108045695",
+    appId: "1:565108045695:web:7a16c9ee14f01d48f7cc4a"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// ประกาศตัวแปร Global เพื่อใช้ในไฟล์นี้
 let editDocId = null;
-let imageBase64 = "";
+let imageList = []; // เก็บ Array ของรูปภาพ Base64
 let productsLocal = [];
 
-// ฟังก์ชันดึงข้อมูล (Fetch)
 async function fetchProducts() {
     productsLocal = [];
     try {
@@ -233,27 +225,25 @@ async function fetchProducts() {
         });
         renderProducts();
     } catch (error) {
-        console.error("Fetch Error:", error);
-        alert("ไม่สามารถดึงข้อมูลได้");
+        console.error(error);
     }
 }
 
-// ฟังก์ชันวาดรายการ (Render)
 function renderProducts() {
     const list = document.getElementById('productList');
     const keyword = document.getElementById('searchBox').value.toLowerCase();
-    let filtered = productsLocal.filter(p => p.name.toLowerCase().includes(keyword) || (p.category && p.category.toLowerCase().includes(keyword)));
+    let filtered = productsLocal.filter(p => p.name.toLowerCase().includes(keyword));
     
     list.innerHTML = '';
     [...filtered].reverse().forEach((p) => {
         list.innerHTML += `
             <div class="product-item">
-                <div>
-                    <strong>${p.name}</strong> 
-                    ${p.isBestSeller ? '⭐' : ''} 
-                    ${p.isSale ? '<span class="sale-label">SALE</span>' : ''}
-                    <br>
-                    <small>฿${p.price} | หมวด: ${p.category || 'ทั่วไป'} | สต็อก: ${p.stock}</small>
+                <div style="display:flex; align-items:center; gap:15px;">
+                    <img src="${p.img || p.images?.[0] || ''}" style="width:50px; height:50px; object-fit:cover; border-radius:8px; background:#eee;">
+                    <div>
+                        <strong>${p.name}</strong> ${p.isBestSeller ? '⭐' : ''}
+                        <br><small>฿${p.price} | สต็อก: ${p.stock} | รูป: ${p.images?.length || 1}</small>
+                    </div>
                 </div>
                 <div class="item-btns">
                     <button class="btn-edit" onclick="editProduct('${p.id}')">แก้ไข</button>
@@ -263,64 +253,76 @@ function renderProducts() {
     });
 }
 
-// ฟังก์ชันอัปเดตรูปภาพ
-function handleImageUpload(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        imageBase64 = e.target.result;
-        document.getElementById('preview-img-tag').src = imageBase64;
-    };
-    reader.readAsDataURL(file);
-}
+// Multi-Image Upload
+window.handleImageUpload = (event) => {
+    const files = event.target.files;
+    const thumbContainer = document.getElementById('thumb-container');
+    
+    if (files.length === 0) return;
+    
+    // Clear list if uploading new set
+    imageList = [];
+    thumbContainer.innerHTML = '';
 
-// ฟังก์ชัน Preview
-function updatePreview() {
+    Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const base64 = e.target.result;
+            imageList.push(base64);
+            thumbContainer.innerHTML += `<img src="${base64}" class="thumb-item">`;
+            updatePreview();
+        };
+        reader.readAsDataURL(file);
+    });
+};
+
+window.updatePreview = () => {
     const name = document.getElementById('name').value || "ชื่อสินค้า";
     const price = Number(document.getElementById('price').value) || 0;
     const salePrice = Number(document.getElementById('salePrice').value) || 0;
     const isSale = document.getElementById('isSale').checked;
     const isBest = document.getElementById('isBestSeller').checked;
-    const stock = document.getElementById('stock').value || 0;
-    const sold = document.getElementById('sold').value || 0;
-    const desc = document.getElementById('desc').value || "";
     const sizes = document.getElementById('sizes').value;
 
     document.getElementById('preview-name').innerText = name;
     document.getElementById('badge-best').style.display = isBest ? 'block' : 'none';
     
-    const priceArea = document.getElementById('price-area');
-    if(isSale && salePrice > 0) {
-        priceArea.innerHTML = `
-            <p style="margin:5px 0;">
-                <span style="text-decoration: line-through; color:#999; font-size: 0.9em;">฿${price.toLocaleString()}</span>
-                <span style="color:red; font-weight:bold; font-size: 1.2em; margin-left:8px;">฿${salePrice.toLocaleString()}</span>
-            </p>`;
-    } else {
-        priceArea.innerHTML = `<p style="margin:5px 0; color: var(--accent); font-weight: bold; font-size: 1.2em;">฿ ${price.toLocaleString()}</p>`;
+    if(imageList.length > 0) {
+        document.getElementById('preview-img-tag').src = imageList[0];
+        const countBadge = document.getElementById('img-count');
+        if(imageList.length > 1) {
+            countBadge.innerText = `+${imageList.length - 1} รูป`;
+            countBadge.style.display = 'block';
+        } else {
+            countBadge.style.display = 'none';
+        }
     }
 
-    document.getElementById('preview-stock').innerText = `สต็อก: ${stock}`;
-    document.getElementById('preview-sold').innerText = `ขายแล้ว: ${sold}`;
-    document.getElementById('preview-desc').innerText = desc;
-    document.getElementById('preview-sizes-list').innerText = sizes ? `ไซส์ที่พร้อม: ${sizes}` : "";
-    if(imageBase64) document.getElementById('preview-img-tag').src = imageBase64;
-}
+    const priceArea = document.getElementById('price-area');
+    if(isSale && salePrice > 0) {
+        priceArea.innerHTML = `<p style="margin:5px 0;"><span style="text-decoration:line-through; color:#999; font-size:14px;">฿${price}</span> <span style="color:red; font-weight:700; font-size:22px;">฿${salePrice}</span></p>`;
+    } else {
+        priceArea.innerHTML = `<p style="margin:5px 0; color:var(--primary); font-weight:700; font-size:22px;">฿${price}</p>`;
+    }
 
-// ฟังก์ชันบันทึก
-async function handleSave() {
+    document.getElementById('preview-stock').innerText = `สต็อก: ${document.getElementById('stock').value || 0}`;
+    document.getElementById('preview-sold').innerText = `ขายแล้ว: ${document.getElementById('sold').value || 0}`;
+    document.getElementById('preview-desc').innerText = document.getElementById('desc').value;
+    document.getElementById('preview-sizes-list').innerText = sizes ? `ไซส์: ${sizes}` : "Free Size";
+};
+
+window.handleSave = async () => {
     const name = document.getElementById('name').value;
     const price = document.getElementById('price').value;
     if (!name || !price) return alert("กรุณากรอกชื่อและราคา!");
 
+    // แปลงข้อความไซส์เป็น Array โครงสร้างเดียวกับหน้า Shop
     const sizeRaw = document.getElementById('sizes').value;
     const sizeData = sizeRaw.split(',').map(item => {
         const parts = item.split(':');
-        return {
-            size: parts[0].trim(),
-            price: parts[1] ? Number(parts[1].trim()) : Number(price)
-        };
+        const sName = parts[0].trim();
+        const sPrice = parts[1] ? Number(parts[1].trim()) : Number(price);
+        return { size: sName, price: sPrice };
     }).filter(s => s.size !== "");
 
     const payload = {
@@ -334,8 +336,9 @@ async function handleSave() {
         description: document.getElementById('desc').value,
         category: document.getElementById('category').value,
         status: document.getElementById('status').value,
-        sizes: sizeData,
-        img: imageBase64,
+        sizes: sizeData.length > 0 ? sizeData : [{size: "Free Size", price: Number(price)}],
+        img: imageList[0] || "", // รูปหลัก
+        images: imageList, // รูปทั้งหมดสำหรับ Carousel
         updatedAt: Date.now()
     };
 
@@ -351,22 +354,10 @@ async function handleSave() {
         resetForm();
         await fetchProducts();
     } catch (err) {
-        console.error(err);
-        alert("บันทึกไม่สำเร็จ เช็ค Rules หรือขนาดรูปภาพ!");
+        alert("Error: " + err.message);
     }
-}
+};
 
-// ฟังก์ชันลบ
-async function deleteProduct(id) {
-    if(confirm("ลบสินค้านี้ใช่ไหม?")) {
-        try {
-            await deleteDoc(doc(db, "products", id));
-            await fetchProducts();
-        } catch (err) { alert("ลบไม่สำเร็จ"); }
-    }
-}
-
-// ฟังก์ชันแก้ไข
 window.editProduct = (id) => {
     const p = productsLocal.find(item => item.id === id);
     if(!p) return;
@@ -381,9 +372,15 @@ window.editProduct = (id) => {
     document.getElementById('desc').value = p.description || "";
     document.getElementById('category').value = p.category || "Shirt";
     document.getElementById('status').value = p.status || "active";
-    document.getElementById('sizes').value = p.sizes ? p.sizes.map(s => `${s.size}:${s.price}`).join(', ') : "";
-    imageBase64 = p.img || "";
     
+    // โหลดรูปภาพ
+    imageList = p.images || (p.img ? [p.img] : []);
+    const thumbContainer = document.getElementById('thumb-container');
+    thumbContainer.innerHTML = imageList.map(img => `<img src="${img}" class="thumb-item">`).join('');
+
+    // โหลดไซส์
+    document.getElementById('sizes').value = p.sizes ? p.sizes.map(s => `${s.size}:${s.price}`).join(', ') : "";
+
     document.getElementById('form-title').innerText = "✏️ แก้ไขสินค้า";
     document.getElementById('main-btn').innerText = "ยืนยันการแก้ไข";
     document.getElementById('cancel-btn').style.display = "inline-block";
@@ -391,29 +388,27 @@ window.editProduct = (id) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
-// ฟังก์ชัน Reset
+window.deleteProduct = async (id) => {
+    if(confirm("ลบสินค้านี้ใช่ไหม?")) {
+        await deleteDoc(doc(db, "products", id));
+        fetchProducts();
+    }
+};
+
 window.resetForm = () => {
-    editDocId = null;
-    imageBase64 = "";
-    document.getElementById('name').value = '';
-    document.getElementById('price').value = '';
-    document.getElementById('salePrice').value = '';
+    editDocId = null; imageList = [];
+    document.querySelectorAll('input:not([type=checkbox]), textarea, select').forEach(i => i.value = '');
     document.getElementById('isSale').checked = false;
     document.getElementById('isBestSeller').checked = false;
-    document.getElementById('stock').value = '';
-    document.getElementById('sold').value = '';
-    document.getElementById('desc').value = '';
-    document.getElementById('sizes').value = '';
+    document.getElementById('thumb-container').innerHTML = '';
     document.getElementById('form-title').innerText = "📦 เพิ่มสินค้าใหม่";
     document.getElementById('main-btn').innerText = "บันทึกข้อมูลสินค้า";
     document.getElementById('cancel-btn').style.display = "none";
-    document.getElementById('preview-img-tag').src = "https://via.placeholder.com/300x200?text=No+Image";
+    document.getElementById('preview-img-tag').src = "https://via.placeholder.com/400x500?text=No+Image";
     updatePreview();
 };
 
-// Export JSON
 window.exportData = () => {
-    if(productsLocal.length === 0) return alert("ไม่มีข้อมูล");
     const data = JSON.stringify(productsLocal, null, 2);
     const blob = new Blob([data], {type: "application/json"});
     const a = document.createElement("a");
@@ -422,14 +417,6 @@ window.exportData = () => {
     a.click();
 };
 
-// Expose functions to HTML
-window.updatePreview = updatePreview;
-window.handleImageUpload = handleImageUpload;
-window.handleSave = handleSave;
-window.deleteProduct = deleteProduct;
-window.renderProducts = renderProducts;
-
-// ตรวจสอบรหัสผ่าน
 const pass = prompt("Admin Password:");
 if(pass === "1234") {
     document.body.style.display = "block";
@@ -438,7 +425,6 @@ if(pass === "1234") {
     document.body.innerHTML = "<h1>Access Denied</h1>";
     document.body.style.display = "block";
 }
-
 </script>
 </body>
 </html>
