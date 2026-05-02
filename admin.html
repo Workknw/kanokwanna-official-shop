@@ -260,17 +260,38 @@ window.handleImageUpload = (event) => {
     
     if (files.length === 0) return;
     
-    // Clear list if uploading new set
     imageList = [];
     thumbContainer.innerHTML = '';
 
     Array.from(files).forEach(file => {
         const reader = new FileReader();
         reader.onload = (e) => {
-            const base64 = e.target.result;
-            imageList.push(base64);
-            thumbContainer.innerHTML += `<img src="${base64}" class="thumb-item">`;
-            updatePreview();
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                let width = img.width;
+                let height = img.height;
+
+                // 1. ปรับขนาดรูปไม่ให้ใหญ่เกินไป (Max 800px)
+                const MAX_WIDTH = 800;
+                if (width > MAX_WIDTH) {
+                    height *= MAX_WIDTH / width;
+                    width = MAX_WIDTH;
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+
+                // 2. บีบอัดคุณภาพเหลือ 0.6 (60%) ช่วยลดขนาดไฟล์ได้เยอะมาก
+                const compressedBase64 = canvas.toDataURL('image/jpeg', 0.6);
+                
+                imageList.push(compressedBase64);
+                thumbContainer.innerHTML += `<img src="${compressedBase64}" class="thumb-item">`;
+                updatePreview();
+            };
+            img.src = e.target.result;
         };
         reader.readAsDataURL(file);
     });
