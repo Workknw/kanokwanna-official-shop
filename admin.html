@@ -578,6 +578,29 @@
         document.body.innerHTML = "<div style='text-align:center; margin-top:100px;'><h1>❌ Access Denied</h1></div>"; 
         document.body.style.display = "block"; 
     }
+    <script>
+function handleLogin() {
+    const email = document.getElementById('login-email').value;
+    const pass = document.getElementById('login-pass').value;
+
+    // ตั้งรหัสง่าย ๆ ก่อน (กันพัง)
+    if (email === "admin" && pass === "1234") {
+        document.getElementById('login-overlay').style.display = "none";
+        document.body.style.overflow = "auto";
+
+        // เรียกโหลดข้อมูล
+        if (typeof listenProducts === "function") listenProducts();
+        if (typeof listenOrders === "function") listenOrders();
+
+    } else {
+        Swal.fire('ผิดพลาด', 'อีเมลหรือรหัสผ่านไม่ถูกต้อง', 'error');
+    }
+}
+
+function handleLogout() {
+    location.reload();
+}
+</script>
 </script>
 
 </body>
