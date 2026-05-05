@@ -513,18 +513,58 @@
             showCheckout();
         }
 
-        window.sendToLine = function() {
-            const name = document.getElementById('custName').value;
-            const phone = document.getElementById('custPhone').value;
-            const addr = document.getElementById('custAddr').value;
-            if(!name || !phone || !addr) return alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+        window.sendToLine = async function() {
+    const name = document.getElementById('custName').value;
+    const phone = document.getElementById('custPhone').value;
+    const addr = document.getElementById('custAddr').value;
 
-            let msg = `🧾 *ORDER ID: KNW-${Math.floor(10000 + Math.random() * 90000)}*\n🌟 *KANOKWAN OFFICIAL*\n--------------------------\n`;
-            cart.forEach((item, i) => msg += `${i+1}. ${item.name} (x${item.qty}) ไซส์: ${item.size}\n`);
-            msg += `--------------------------\n💰 ยอดรวม: ${document.getElementById('cartTotal').innerText} บาท\n👤 ผู้รับ: ${name}\n📞 โทร: ${phone}\n📍 ที่อยู่: ${addr}`;
-            window.location.href = `https://line.me/R/oaMessage/@800gljgf/?${encodeURIComponent(msg)}`
-            cart = []; saveCart(); toggleCart();
-        }
+    if(!name || !phone || !addr) {
+        alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+        return;
+    }
+
+    // 🔥 แปลง cart → items
+    const items = cart.map(item => ({
+        productId: item.id,
+        name: item.name,
+        size: item.size,
+        qty: item.qty,
+        price: item.price
+    }));
+
+    const totalAmount = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+
+    try {
+        // ✅ 1. ส่งเข้า Firestore
+        await addDoc(collection(db, "orders"), {
+            customerName: name,
+            customerPhone: phone,
+            address: addr,
+            items: items,
+            totalAmount: totalAmount,
+            status: "pending",
+            createdAt: Date.now()
+        });
+
+        // ✅ 2. ส่ง LINE (ของเดิมคุณ)
+        let msg = `🧾 ORDER ใหม่\n------------------\n`;
+        cart.forEach((item, i) => {
+            msg += `${i+1}. ${item.name} x${item.qty} (${item.size})\n`;
+        });
+        msg += `------------------\n💰 ${totalAmount} บาท\n👤 ${name}\n📞 ${phone}\n📍 ${addr}`;
+
+        window.location.href = `https://line.me/R/oaMessage/@800gljgf/?${encodeURIComponent(msg)}`;
+
+        // ✅ 3. ล้างตะกร้า
+        cart = [];
+        saveCart();
+        toggleCart();
+
+    } catch (e) {
+        console.error(e);
+        alert("สั่งซื้อไม่สำเร็จ");
+    }
+};
     </script>
 </body>
 </html>
