@@ -384,6 +384,29 @@
         }
     };
 
+    window.rejectOrder = async (orderId) => {
+    const res = await Swal.fire({
+        title: 'ปฏิเสธออเดอร์?',
+        text: "ออเดอร์นี้จะถูกยกเลิก",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d32f2f'
+    });
+
+    if(res.isConfirmed) {
+        try {
+            await updateDoc(doc(db, "orders", orderId), {
+                status: "cancelled",
+                updatedAt: Date.now()
+            });
+
+            Swal.fire('สำเร็จ', 'ยกเลิกออเดอร์แล้ว', 'success');
+        } catch (e) {
+            Swal.fire('ผิดพลาด', e, 'error');
+        }
+    }
+};
+
     // --- 🛠 Helpers & UI ---
     window.toggleSelect = (id) => {
         selectedIds.has(id) ? selectedIds.delete(id) : selectedIds.add(id);
