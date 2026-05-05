@@ -211,8 +211,11 @@
     <main class="container">
         <div class="filter-container">
             <div class="filter-btn active" onclick="filterItems('all', this)">ทั้งหมด</div>
-            <div class="filter-btn" onclick="filterItems('Shirt', this)">เสื้อยูนิฟอร์ม</div>
-            <div class="filter-btn" onclick="filterItems('Pants', this)">กางเกง</div>
+            <div class="filter-btn" onclick="filterItems('student', this)">นักเรียน</div>
+            <div class="filter-btn" onclick="filterItems('student', this)">นักศึกษา</div>
+            <div class="filter-btn" onclick="filterItems('government officer', this)">ข้าราชการ</div>
+            <div class="filter-btn" onclick="filterItems('shoe', this)">รองเท้า</div>
+            <div class="filter-btn" onclick="filterItems('General', this)">ทั่วไป</div>
         </div>
 
         <h2 style="margin-bottom:40px; font-size:28px;">สินค้าแนะนำ</h2>
@@ -390,7 +393,7 @@
                         </select>
 
                         <button class="add-to-bag-btn" onclick="addToCart('${productId}', '${p.name}', 'qty-${productId}', 'size-${productId}')">เพิ่มลงในตะกร้า</button>
-                        <button class="buy-now-btn" onclick="buyNow('${productId}', '${p.name}', 'qty-${productId}', 'size-${productId}')">ซื้อเลย⚡</button>
+                        <button class="buy-now-btn" onclick="buyNow('${productId}', '${p.name}', 'qty-${productId}', 'size-${productId}')">ซื้อเลย</button>
                     </div>
                 </div>`;
                 container.insertAdjacentHTML('beforeend', cardHtml);
