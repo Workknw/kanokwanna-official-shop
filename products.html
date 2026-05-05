@@ -279,18 +279,6 @@
         renderProducts();
     });
 }
-
-    onSnapshot(q, (snap) => {
-        productsLocal = snap.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-        }));
-
-        updateStats();
-        renderProducts();
-    });
-}
-
     function updateStats() {
         document.getElementById('stat-total').innerText = productsLocal.length;
         document.getElementById('stat-low').innerText = productsLocal.filter(p => p.stock < 5).length;
