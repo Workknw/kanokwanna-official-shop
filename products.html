@@ -334,7 +334,10 @@
             const orders = snap.docs.map(d => ({id: d.id, ...d.data()}));
             let p = 0, s = 0;
             document.getElementById('orderList').innerHTML = orders.map(o => {
-                const statusLabel = o.status === 'pending' ? 'รอดำเนินการ' : 'จัดส่งแล้ว';
+                const statusLabel = 
+    o.status === 'pending' ? 'รอดำเนินการ' :
+    o.status === 'shipped' ? 'จัดส่งแล้ว' :
+    o.status === 'cancelled' ? 'ยกเลิกแล้ว' : 'ไม่ทราบสถานะ';
                 if(o.status === 'pending') p++; else s++;
                 return `
                     <div class="order-card order-${o.status}">
