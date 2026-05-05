@@ -564,9 +564,9 @@
         toggleCart();
 
     } catch (e) {
-        console.error(e);
-        alert("สั่งซื้อไม่สำเร็จ");
-    }
+    console.error("ERROR:", e);
+    alert("สั่งซื้อไม่สำเร็จ: " + e.message);
+}
 };
     </script>
 </body>
