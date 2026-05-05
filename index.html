@@ -537,7 +537,7 @@
 
     try {
         // ✅ 1. ส่งเข้า Firestore
-        await addDoc(collection(db, "orders"), {
+        await addDoc(collection(window.db, "orders"), {
             customerName: name,
             customerPhone: phone,
             address: addr,
