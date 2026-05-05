@@ -263,19 +263,18 @@
 
     // --- 📦 Product Logic ---
     function listenProducts() {
-        const q = query(collection(db, "products"), orderBy("updatedAt", "desc"));
-        onSnapshot(
-  query(
-    collection(db, "orders"),
-    where("status", "==", "pending"),
-    orderBy("createdAt", "desc")
-  ),
-  (snap) => {
-            productsLocal = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            updateStats();
-            renderProducts();
-        });
-    }
+    const q = query(collection(db, "products"), orderBy("updatedAt", "desc"));
+
+    onSnapshot(q, (snap) => {
+        productsLocal = snap.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+
+        updateStats();
+        renderProducts();
+    });
+}
 
     function updateStats() {
         document.getElementById('stat-total').innerText = productsLocal.length;
@@ -311,7 +310,13 @@
 
     // --- 🧾 Order Logic (Real-time Sync) ---
     function listenOrders() {
-        onSnapshot(query(collection(db, "orders"), orderBy("createdAt", "desc")), (snap) => {
+    onSnapshot(
+        query(
+            collection(db, "orders"),
+            where("status", "==", "pending"),
+            orderBy("createdAt", "desc")
+        ),
+        (snap) => {
             const orders = snap.docs.map(d => ({id: d.id, ...d.data()}));
             let p = 0, s = 0;
             document.getElementById('orderList').innerHTML = orders.map(o => {
