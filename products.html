@@ -265,6 +265,8 @@
     let imageList = []; 
     let productsLocal = [];
     let selectedIds = new Set();
+    let currentOrderTab = 'pending';
+    let ordersLocal = [];
 
     // --- 🔄 Tab Logic ---
     window.switchTab = (tab) => {
