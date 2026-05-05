@@ -264,10 +264,7 @@
 
     // --- 📦 Product Logic ---
     function listenProducts() {
-    const q = query(
-        collection(db, "products"),
-        orderBy("updatedAt", "desc")
-    );
+    const q = query(collection(db, "orders"), orderBy("createdAt", "desc"))
 
     onSnapshot(q, (snap) => {
         productsLocal = snap.docs.map(doc => ({
