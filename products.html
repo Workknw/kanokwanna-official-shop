@@ -218,6 +218,20 @@
 
     <!-- 🧾 ORDER TAB -->
     <div id="order-page" style="display:none;">
+
+    <!-- ✅ ใส่ตรงนี้ -->
+    <div class="tab-nav" style="margin-bottom:20px;">
+        <button onclick="switchOrderTab('pending')" class="tab-btn active" id="tab-pending">
+            🟡 รอดำเนินการ
+        </button>
+        <button onclick="switchOrderTab('shipped')" class="tab-btn" id="tab-shipped">
+            🟢 จัดส่งแล้ว
+        </button>
+        <button onclick="switchOrderTab('cancelled')" class="tab-btn" id="tab-cancelled">
+            🔴 ยกเลิก
+        </button>
+    </div>
+        
         <div class="stats-grid">
             <div class="stat-card" style="border-bottom-color: #f59e0b;">
                 <h4>🚚 คำสั่งซื้อที่รอดำเนินการ</h4><p id="stat-pending">0</p>
