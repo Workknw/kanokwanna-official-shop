@@ -340,7 +340,10 @@
                                 </div>
                             </div>
                             <div style="text-align:right;">
-                                ${o.status === 'pending' ? `<button onclick="approveOrder('${o.id}')" class="btn-main" style="width:auto; padding:10px 25px;">ยืนยัน & ตัดสต็อก</button>` : `<div style="color:#10b981; font-weight:800;"><i class="fas fa-check-circle"></i> ส่งเรียบร้อย</div>`}
+                                ${o.status === 'pending' ? `
+    <button onclick="approveOrder('${o.id}')" class="btn-main" style="width:auto; padding:10px 15px;">ยืนยัน</button>
+    <button onclick="rejectOrder('${o.id}')" class="btn-ghost" style="color:red;">ปฏิเสธ</button>
+` : `<div style="color:#10b981; font-weight:800;">ส่งเรียบร้อย</div>`}
                             </div>
                         </div>
                     </div>`;
